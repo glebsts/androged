@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">Generalized Edit Distance</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_ged">GED</string>
+    <string name="lblDict">Dictionary:</string>
+
+</resources>
