@@ -10,7 +10,7 @@
         android:layout_alignBottom="@+id/cmbDictionary"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal|center_vertical|right"
         android:text="@string/lblDict"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -22,5 +22,103 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/lblDict"
         android:drawSelectorOnTop="true" />
+
+    <Button
+        android:id="@+id/btnShowDictionary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/lblDict"
+        android:text="@string/btnShowDict" />
+
+    <Button
+        android:id="@+id/btnViewTransformations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnShowDictionary"
+        android:layout_alignBottom="@+id/btnShowDictionary"
+        android:layout_toRightOf="@+id/btnShowDictionary"
+        android:text="@string/btnViewTransformations" />
+
+    <Button
+        android:id="@+id/btnDictionaryInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnViewTransformations"
+        android:layout_alignBottom="@+id/btnViewTransformations"
+        android:layout_toRightOf="@+id/btnViewTransformations"
+        android:text="@string/btnDictionaryInfo" />
+
+    <Button
+        android:id="@+id/btnSearchOptions"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnShowDictionary"
+        android:text="@string/btnSearchOptions" />
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnSearchOptions" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/lblMaxEditDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/lblMaxEditDistance"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/txtMaxEditDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+                android:text="@string/txtMaxEditDistanceDefaultValue" >
+
+                <requestFocus />
+            </EditText>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/lblSearchTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/lblSearchTerm"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <EditText
+                android:id="@+id/txtSearchTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/txtSearchTermHint" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/btnStartSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tableLayout1"
+        android:text="@string/btnStartSearch"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

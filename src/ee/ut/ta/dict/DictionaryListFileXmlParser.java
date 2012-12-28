@@ -23,9 +23,6 @@ public class DictionaryListFileXmlParser {
 	}
 	
 	public List<IDictionary> parseFile(InputStream fileStream) {
-		Log.d(TAG, "Parsing from "+fileStream.toString());
-		
-//Log.d(TAG, "Content: "+convertstreamtostring(fileStream));
 		List<IDictionary> result = new ArrayList<IDictionary>();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setIgnoringElementContentWhitespace(true);
@@ -34,16 +31,12 @@ public class DictionaryListFileXmlParser {
 			DocumentBuilder builder = dbf.newDocumentBuilder();
 
 			Document document = builder.parse(fileStream);
-			Log.d(TAG, "Document parsed: "+document.getTextContent());
 			document.getDocumentElement().normalize();
 			Element root = document.getDocumentElement();
-			Log.d(TAG, "Root name is "+root.getLocalName());
 			NodeList nodeList = root.getChildNodes();
 			for (int i = 0; i < nodeList.getLength(); i++) {
-				Log.d(TAG, "Loading item "+i);
 				NamedNodeMap attrs = nodeList.item(i).getAttributes();
 				IDictionary dict = new AssetDictionary();
-				//Log.d(TAG, "Loading item "+i);
 				dict.setId(Integer.parseInt(attrs.getNamedItem("id")
 						.getNodeValue()));
 				dict.setName(attrs.getNamedItem("name")

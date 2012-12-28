@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <CheckedTextView
+        android:id="@+id/ctvSOexactMatches"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/ctvSOExactMatch"
+        android:clickable="true"
+    android:focusable="true"
+        
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckedTextView
+        android:id="@+id/ctvSObeginningMatch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctvSOexactMatches"
+        android:layout_marginTop="16dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/ctvSObeginningMatch"
+        android:clickable="true"
+    android:focusable="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckedTextView
+        android:id="@+id/ctvSOmiddleMatch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctvSObeginningMatch"
+        android:layout_marginTop="16dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/ctvSOmiddleMatch"
+        android:clickable="true"
+    android:focusable="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckedTextView
+        android:id="@+id/ctvSOendingMatch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctvSOmiddleMatch"
+        android:layout_marginTop="16dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/ctvSOendingMatch"
+        android:clickable="true"
+    android:focusable="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <CheckedTextView
+        android:id="@+id/ctvSOcaseSensitive"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ctvSOendingMatch"
+        android:layout_marginTop="16dp"
+        android:checkMark="?android:attr/textCheckMark"
+        android:text="@string/ctvSOcaseSensitive"
+        android:clickable="true"
+    android:focusable="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ctvSOcaseSensitive"
+        android:layout_marginTop="22dp" >
+
+        <Button
+            android:id="@+id/btnSOOk"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="@string/btnSOOk" />
+
+        <Button
+            android:id="@+id/btnSOCancel"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="@string/btnSOCancel" />
+    </LinearLayout>
+
+</RelativeLayout>
