@@ -2,12 +2,15 @@ package ee.ut.ta.dict;
 
 import java.util.List;
 
+import ee.ut.ta.dict.transf.Transformation;
+
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 abstract class AbstractDictionary implements IDictionary {
 	protected List<String> words = null;
+	protected List<Transformation> transformations = null;
+	protected List<Letter> letters = null;
 	static final String TAG = "ged.abstractdictionary"; // tag for LogCat
 	private int id;
 	private String name;
@@ -15,6 +18,7 @@ abstract class AbstractDictionary implements IDictionary {
 	private String fileName;
 	private String letterFileName;
 	private int transformationFileId;
+	private IDictionaryStorage storage;
 
 	public void setId(int id) {
 		this.id = id;
@@ -69,15 +73,50 @@ abstract class AbstractDictionary implements IDictionary {
 	public List<String> getWords(Context ctx) {
 		if (this.words == null) {
 			this.loadWords(ctx);
-			Log.d(TAG,"Words loaded, count = " + words.size());
+			
 		}
 
 		return this.words;
 
 	}
 	
+	abstract void loadTransformations(Context ctx);
+
+	public List<Transformation> getTransformations(Context ctx) {
+		if (this.transformations == null) {
+			this.loadTransformations(ctx);
+			
+		}
+
+		return this.transformations;
+
+	}
+	
+	abstract void loadLetters(Context ctx);
+
+	public List<Letter> getLetters(Context ctx) {
+		if (this.letters == null) {
+			this.loadLetters(ctx);
+			
+		}
+
+		return this.letters;
+
+	}
+	
 	public void unload(){
 		this.words = null;
 		Log.d(TAG, "Words unloaded");
+		this.letters = null;
+		Log.d(TAG, "Letters unloaded");
+		this.transformations = null;
+		Log.d(TAG, "Transformations unloaded");
+	}
+	
+	public IDictionaryStorage getStorage(){
+		return this.storage;
+	}
+	public void setStorage(IDictionaryStorage storage){
+		this.storage=storage;
 	}
 }

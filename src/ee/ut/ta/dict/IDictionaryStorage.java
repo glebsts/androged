@@ -1,7 +1,10 @@
 package ee.ut.ta.dict;
 
-import java.util.List;
+import ee.ut.ta.dict.transf.ITransformationFile;
+import ee.ut.ta.dict.transf.ITransformationStorage;
+
 
 public interface IDictionaryStorage {
-//List<IDictionary> loadDictionaries();
+	public ITransformationStorage getTransformationStorage();
+
 }

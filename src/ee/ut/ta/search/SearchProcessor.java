@@ -23,6 +23,8 @@ public class SearchProcessor implements Runnable {
 	public void run(){
 		Log.d(TAG, "Run!");
 		dict.getWords(ctx);
+		dict.getLetters(ctx);
+		dict.getTransformations(ctx);
 		
 		dict.unload();
 	}

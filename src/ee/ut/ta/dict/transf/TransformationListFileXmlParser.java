@@ -1,4 +1,4 @@
-package ee.ut.ta.dict;
+package ee.ut.ta.dict.transf;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,16 +14,16 @@ import org.w3c.dom.NodeList;
 
 import android.util.Log;
 
-public class DictionaryListFileXmlParser {
-	static final String TAG = "ged.dictionaryfilexmlparser"; // tag for LogCat
+public class TransformationListFileXmlParser {
+	static final String TAG = "ged.transformationfilexmlparser"; // tag for LogCat
 	
 	String convertstreamtostring(InputStream is){
 		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 	    return s.hasNext() ? s.next() : "";
 	}
 	
-	public List<IDictionary> parseFile(InputStream fileStream, AssetDictionaryStorage storage) {
-		List<IDictionary> result = new ArrayList<IDictionary>();
+	public List<ITransformationFile> parseFile(InputStream fileStream) {
+		List<ITransformationFile> result = new ArrayList<ITransformationFile>();
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setIgnoringElementContentWhitespace(true);
 		dbf.setIgnoringComments(true);
@@ -36,22 +36,16 @@ public class DictionaryListFileXmlParser {
 			NodeList nodeList = root.getChildNodes();
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				NamedNodeMap attrs = nodeList.item(i).getAttributes();
-				IDictionary dict = new AssetDictionary();
-				dict.setId(Integer.parseInt(attrs.getNamedItem("id")
+				ITransformationFile file = new AssetTransformationFile();
+				file.setId(Integer.parseInt(attrs.getNamedItem("id")
 						.getNodeValue()));
-				dict.setName(attrs.getNamedItem("name")
+				file.setName(attrs.getNamedItem("name")
 						.getNodeValue());
-				dict.setDescription(attrs.getNamedItem("description")
+				file.setFileName(attrs.getNamedItem("fileName")
 						.getNodeValue());
-				dict.setFileName(attrs.getNamedItem("fileName")
-						.getNodeValue());
-				dict.setLetterFileName(attrs
-						.getNamedItem("letterFileName").getNodeValue());
-				dict.setTransformationFileId(Integer.parseInt(attrs.getNamedItem(
-						"transformationFileId").getNodeValue()));
-				dict.setStorage(storage);
-				result.add(dict);
-				Log.d(TAG, "Added "+i+". dictionary "+dict.getName());
+				
+				result.add(file);
+				Log.d(TAG, "Added "+i+". transformation file "+file.getName());
 			}
 
 		} catch (Exception e) {

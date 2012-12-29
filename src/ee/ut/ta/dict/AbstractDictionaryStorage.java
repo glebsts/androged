@@ -2,10 +2,13 @@ package ee.ut.ta.dict;
 
 import java.util.List;
 
+import ee.ut.ta.dict.transf.ITransformationStorage;
+
 abstract class AbstractDictionaryStorage implements IDictionaryStorage {
 	private List<IDictionary> dictionaries = null;
-	static final String TAG = "ged.abstractstorage"; // tag for LogCat
+	static final String TAG = "ged.abstractdictionarystorage"; // tag for LogCat
 
+	ITransformationStorage transformationStorage;
 	abstract List<IDictionary> loadDictionaries();
 	
 	public List<IDictionary> getDictionaries() {
@@ -17,5 +20,8 @@ abstract class AbstractDictionaryStorage implements IDictionaryStorage {
 
 		return this.dictionaries;
 
+	}
+	public ITransformationStorage getTransformationStorage(){
+		return this.transformationStorage;
 	}
 }
