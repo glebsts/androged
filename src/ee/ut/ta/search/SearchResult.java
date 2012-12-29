@@ -1,6 +1,7 @@
 package ee.ut.ta.search;
 
 public class SearchResult {
+	
 	private int word;
 	private double distance;
 	public void setWord(int word) {

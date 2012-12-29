@@ -2,6 +2,8 @@ package ee.ut.ta.dict;
 
 import java.util.List;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 abstract class AbstractDictionary implements IDictionary {
@@ -62,15 +64,20 @@ abstract class AbstractDictionary implements IDictionary {
 		return transformationFileId;
 	}
 
-	abstract List<String> loadWords();
+	abstract void loadWords(Context ctx);
 
-	public List<String> getWords() {
+	public List<String> getWords(Context ctx) {
 		if (this.words == null) {
-			this.words = this.loadWords();
+			this.loadWords(ctx);
 			Log.d(TAG,"Words loaded, count = " + words.size());
 		}
 
 		return this.words;
 
+	}
+	
+	public void unload(){
+		this.words = null;
+		Log.d(TAG, "Words unloaded");
 	}
 }

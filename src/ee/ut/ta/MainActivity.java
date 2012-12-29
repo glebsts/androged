@@ -14,10 +14,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import ee.ut.ta.dict.AssetDictionaryStorage;
 import ee.ut.ta.dict.IDictionary;
 import ee.ut.ta.search.SearchOptions;
+import ee.ut.ta.search.SearchProcessor;
 import ee.ut.ta.ui.DictionaryAdapter;
 
 public class MainActivity extends Activity implements OnItemSelectedListener {
@@ -29,12 +31,16 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	AssetDictionaryStorage assetDictionaryStorage;
 	List<IDictionary> dictionaries;
 
-	// search options
+	// search
 	SearchOptions searchOptions = new SearchOptions();
+	SearchProcessor searchProcessor;
+	Thread searchThread;
 
 	// screen controls
 	Spinner cmbDictionary;
 	Button btnSearchOptions;
+	Button btnStartSearch;
+	EditText txtSearchTerm;
 
 	// adapters
 	DictionaryAdapter dictionaryAdapter;
@@ -47,7 +53,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 		dictionaries = (assetDictionaryStorage = new AssetDictionaryStorage(
 				getApplicationContext())).getDictionaries();
-		Log.d(TAG, "Loaded dict size = " + dictionaries.size());
+		Log.d(TAG, "Loaded dict count = " + dictionaries.size());
 		cmbDictionary = (Spinner) findViewById(R.id.cmbDictionary);
 		dictionaryAdapter = new DictionaryAdapter(this,
 				R.layout.dict_spinner_row, R.id.dictName, dictionaries);
@@ -56,7 +62,29 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 		btnSearchOptions = (Button) findViewById(R.id.btnSearchOptions);
 		btnSearchOptions.setOnClickListener(searchOptionsClickHandler);
+
+		btnStartSearch = (Button) findViewById(R.id.btnStartSearch);
+		btnStartSearch.setOnClickListener(startSearchClickHandler);
+
+		txtSearchTerm = (EditText) findViewById(R.id.txtSearchTerm);
 	}
+
+	Button.OnClickListener startSearchClickHandler = new Button.OnClickListener() {
+		public void onClick(View v) {
+			if(txtSearchTerm.getText().length()==0){
+				txtSearchTerm.requestFocus();
+				return;
+			}
+			
+			searchProcessor = new SearchProcessor(getApplicationContext(),
+					txtSearchTerm.getText().toString(), searchOptions,
+					dictionaries.get(selectedDictionary));
+			searchThread = new Thread(null, searchProcessor, "Search thread");
+			searchThread.start();
+			Log.d(TAG, "Started search processor thread");
+
+		}
+	};
 
 	Button.OnClickListener searchOptionsClickHandler = new Button.OnClickListener() {
 		public void onClick(View v) {
@@ -76,25 +104,25 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 					.findViewById(R.id.ctvSOexactMatches);
 			text.setChecked(searchOptions.getExactMatches());
 			text.setOnClickListener(ctvClick);
-			
+
 			text = (CheckedTextView) dialog
 					.findViewById(R.id.ctvSObeginningMatch);
 			text.setChecked(searchOptions.getBeginningMatch());
 			text.setOnClickListener(ctvClick);
-			
+
 			text = (CheckedTextView) dialog.findViewById(R.id.ctvSOmiddleMatch);
 			text.setChecked(searchOptions.getMiddleMatch());
 			text.setOnClickListener(ctvClick);
-			
+
 			text = (CheckedTextView) dialog.findViewById(R.id.ctvSOendingMatch);
 			text.setChecked(searchOptions.getEndingMatch());
 			text.setOnClickListener(ctvClick);
-			
+
 			text = (CheckedTextView) dialog
 					.findViewById(R.id.ctvSOcaseSensitive);
 			text.setChecked(searchOptions.getCaseSensitive());
 			text.setOnClickListener(ctvClick);
-			
+
 			Button btnCancel = (Button) dialog.findViewById(R.id.btnSOCancel);
 			btnCancel.setOnClickListener(new OnClickListener() {
 

@@ -1,5 +1,10 @@
 package ee.ut.ta.dict;
 
+import java.util.List;
+
+import android.content.Context;
+import android.content.res.AssetManager;
+
 public interface IDictionary {
 	public int getId();
 	public void setId(int id);
@@ -13,4 +18,7 @@ public interface IDictionary {
 	public void setLetterFileName(String letterFileName);
 	public int getTransformationFileId();
 	public void setTransformationFileId(int transformationFileId);
+	public List<String> getWords(Context context);
+	public void unload();
+	
 }
