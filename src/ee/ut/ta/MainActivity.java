@@ -20,6 +20,7 @@ import ee.ut.ta.dict.AssetDictionaryStorage;
 import ee.ut.ta.dict.IDictionary;
 import ee.ut.ta.search.SearchOptions;
 import ee.ut.ta.search.SearchProcessor;
+import ee.ut.ta.search.ged.Trie;
 import ee.ut.ta.ui.DictionaryAdapter;
 
 public class MainActivity extends Activity implements OnItemSelectedListener {
@@ -76,6 +77,8 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 				return;
 			}
 			
+			
+		 
 			searchProcessor = new SearchProcessor(getApplicationContext(),
 					txtSearchTerm.getText().toString(), searchOptions,
 					dictionaries.get(selectedDictionary));

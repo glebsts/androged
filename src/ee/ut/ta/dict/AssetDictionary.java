@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ee.ut.ta.dict.transf.AssetTransformationStorage;
-import ee.ut.ta.dict.transf.ITransformationFile;
-import ee.ut.ta.dict.transf.Transformation;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import ee.ut.ta.dict.transf.ITransformationFile;
+import ee.ut.ta.dict.transf.Transformation;
 
 public class AssetDictionary extends AbstractDictionary {
 	static final String TAG = "ged.assetdictionary"; // tag for LogCat

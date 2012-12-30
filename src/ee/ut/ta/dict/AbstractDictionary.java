@@ -1,11 +1,11 @@
 package ee.ut.ta.dict;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import ee.ut.ta.dict.transf.Transformation;
 
 import android.content.Context;
 import android.util.Log;
+import ee.ut.ta.dict.transf.Transformation;
 
 abstract class AbstractDictionary implements IDictionary {
 	protected List<String> words = null;
@@ -73,11 +73,15 @@ abstract class AbstractDictionary implements IDictionary {
 	public List<String> getWords(Context ctx) {
 		if (this.words == null) {
 			this.loadWords(ctx);
-			
 		}
-
 		return this.words;
-
+	}
+	
+	public List<String> getWords() {
+		if (this.words == null) {
+			return new ArrayList<String>();
+		}
+		return this.words;
 	}
 	
 	abstract void loadTransformations(Context ctx);
