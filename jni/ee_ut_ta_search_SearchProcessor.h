@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     ee_ut_ta_search_SearchProcessor
  * Method:    jniStoreWords
- * Signature: (Ljava/util/List;)V
+ * Signature: ([Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_ee_ut_ta_search_SearchProcessor_jniStoreWords
-  (JNIEnv *, jclass, jobject);
+  (JNIEnv *, jclass, jobjectArray);
 
 #ifdef __cplusplus
 }

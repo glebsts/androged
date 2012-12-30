@@ -41,12 +41,12 @@ public class SearchProcessor implements Runnable {
 		}
 		*/
 		
-		jniStoreWords(dict.getWords());
+		jniStoreWords(dict.getWords().toArray(new String[dict.getWords().size()]));
 		
 		dict.unload();
 	}
 	
-	public static native void jniStoreWords(List<String> words);
+	public static native void jniStoreWords(String[] words);
 
 	static {
 		System.loadLibrary("ged"); // 
