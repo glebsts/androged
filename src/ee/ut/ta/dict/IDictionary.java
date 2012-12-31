@@ -21,6 +21,7 @@ public interface IDictionary {
 	public List<String> getWords(Context context);
 	public List<String> getWords();
 	public List<Transformation> getTransformations(Context context);
+	public List<Transformation> getTransformations();
 	public List<Letter> getLetters(Context context);
 	public void unload();
 	public IDictionaryStorage getStorage();

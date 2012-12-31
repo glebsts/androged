@@ -1,11 +1,9 @@
 package ee.ut.ta.search;
 
-import java.util.List;
-
 import android.content.Context;
 import android.util.Log;
 import ee.ut.ta.dict.IDictionary;
-import ee.ut.ta.search.ged.Trie;
+import ee.ut.ta.search.ged.NativeGed;
 
 public class SearchProcessor implements Runnable {
 	String searchTerm;
@@ -41,17 +39,33 @@ public class SearchProcessor implements Runnable {
 		}
 		*/
 		
-		jniStoreWords(dict.getWords().toArray(new String[dict.getWords().size()]));
+	/*	jniStoreWords(dict.getWords().toArray(new String[dict.getWords().size()])); */
+		
+		NativeGed nativeGed = new NativeGed();
+		nativeGed.initializeStore();
+		nativeGed.setSearchTerm(searchTerm);
+		nativeGed.setSearchOptions(new boolean[]{searchOptions.getExactMatches(), searchOptions.getBeginningMatch(),
+				searchOptions.getMiddleMatch(), searchOptions.getEndingMatch(), searchOptions.getCaseSensitive()});
+		
+	//	nativeGed.setDictionaryContent(dict.getWords().toArray(new String[dict.getWords().size()]));
+		String[] transstrings = new String[dict.getTransformations().size()];
+		for(int i=0;i<transstrings.length;i++){
+			transstrings[i]=dict.getTransformations().get(i).toString();
+			
+		}
+	//	nativeGed.setTransformationContent(transstrings);
+		nativeGed.createTrie();
+		nativeGed.finalizeStore();
 		
 		dict.unload();
 	}
 	
-	public static native void jniStoreWords(String[] words);
+ /*	public static native void jniStoreWords(String[] words);
 
 	static {
 		System.loadLibrary("ged"); // 
 		}
 	
-	
+	 */
 
 }

@@ -52,4 +52,9 @@ public class Transformation {
 	double getWeight() {
 		return weight;
 	}
+	@Override
+	public String toString(){
+		return String.format("%s:%s:%1.2f", this.a, this.b, this.weight);
+		
+	}
 }

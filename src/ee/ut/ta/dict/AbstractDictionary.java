@@ -89,11 +89,15 @@ abstract class AbstractDictionary implements IDictionary {
 	public List<Transformation> getTransformations(Context ctx) {
 		if (this.transformations == null) {
 			this.loadTransformations(ctx);
-			
 		}
-
 		return this.transformations;
-
+	}
+	
+	public List<Transformation> getTransformations() {
+		if (this.transformations == null) {
+			return new ArrayList<Transformation>();
+		}
+		return this.transformations;
 	}
 	
 	abstract void loadLetters(Context ctx);
