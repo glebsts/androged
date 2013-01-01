@@ -9,6 +9,14 @@
 #define GENEDITDIST_H_
 #include "FindEditDistanceMod.h"
 
+typedef struct {
+	char *result;
+	double distance;
+	int type;
+} SRES;
+
+
+
 wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen);
 int findDistances(char *file, wchar_t *string, int stringLen, double editD, char flagsInPositions[FP_MAX_POSITIONS]);
 int findBest(char *file, wchar_t *string, int stringLen, int best, char flag);

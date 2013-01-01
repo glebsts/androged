@@ -25,10 +25,10 @@ typedef enum {
 	StoreType_BooleanArray, // for flags
 
 
-	StoreType_StringArray
+	StoreType_StringArray,
 // for dict
 //StoreType_Color,  // for custom classes etc
-//    StoreType_ColorArray
+    StoreType_ResultArray
 } StoreType;
 
 typedef union {
@@ -39,11 +39,11 @@ typedef union {
 	int32_t mInteger;
 	int64_t mLong;
 	char* mString;
-	//  jobject  mColor;
+//  jobject  mColor;
 
 	uint8_t* mBooleanArray;
 	char** mStringArray;
-	//jobject*  mColorArray;
+	jobject*  mResultArray;
 } StoreValue;
 
 typedef struct {

@@ -1,5 +1,6 @@
 package ee.ut.ta.search.ged;
 
+import ee.ut.ta.search.SearchResult;
 import android.util.Log;
 
 public class NativeGed {
@@ -15,6 +16,6 @@ public native void setSearchTerm(String searchTerm);
 public native void setSearchOptions(boolean[] searchOptions);
 public native void setDictionaryContent(String[] array);
 public native void setTransformationContent(String[] array);
-public native void createTrie();
+public native String[] process();
 
 }

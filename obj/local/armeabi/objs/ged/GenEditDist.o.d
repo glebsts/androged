@@ -1,4 +1,5 @@
 obj/local/armeabi/objs/ged/GenEditDist.o: jni/GenEditDist.c \
+ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/jni.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/stdio.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/sys/cdefs.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/sys/cdefs_elf.h \
@@ -43,6 +44,8 @@ obj/local/armeabi/objs/ged/GenEditDist.o: jni/GenEditDist.c \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/sys/sysconf.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/linux/capability.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/pathconf.h \
+ jni/NativeGed.h \
+ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h \
  jni/FindEditDistanceMod.h jni/Trie.h jni/ARTrie.h jni/FileToTrie.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/fcntl.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/linux/fcntl.h \
@@ -62,7 +65,9 @@ obj/local/armeabi/objs/ged/GenEditDist.o: jni/GenEditDist.c \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/asm-generic/errno.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/asm-generic/errno-base.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/math.h \
- c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h
+ jni/GenEditDist.h
+
+c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/jni.h:
 
 c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/stdio.h:
 
@@ -152,6 +157,10 @@ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/i
 
 c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/pathconf.h:
 
+jni/NativeGed.h:
+
+c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h:
+
 jni/FindEditDistanceMod.h:
 
 jni/Trie.h:
@@ -196,4 +205,4 @@ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/i
 
 c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/math.h:
 
-c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h:
+jni/GenEditDist.h:

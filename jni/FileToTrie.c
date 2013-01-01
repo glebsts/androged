@@ -96,8 +96,8 @@ int trieFromFile(char *data){
 
 	i = 0;
 	j = 0;
-LOGD("Inside creator");
-char buff[100];
+//LOGD("Inside creator");
+//char buff[100];
 	while(i < datalen){
     /*
     *   Setting weights of default edit operations:
@@ -190,8 +190,8 @@ char buff[100];
 if(caseInsensitiveMode)
               wstr2 = makeStringToIgnoreCase(wstr2, w2);
 
-sprintf(buff, "Add: %s", wstr2);
-          LOGD(buff);
+//sprintf(buff, "Add: %s", wstr2);
+  //        LOGD(buff);
           addToARTrie(addT, wstr2, w2, v);
           free(wstr2);
           free(string2);
@@ -204,8 +204,8 @@ sprintf(buff, "Add: %s", wstr2);
           if(caseInsensitiveMode)
               wstr1 = makeStringToIgnoreCase(wstr1, w1);
 
-          sprintf(buff, "Remove: %s", wstr2);
-                    LOGD(buff);
+          //sprintf(buff, "Remove: %s", wstr2);
+             //       LOGD(buff);
           addToARTrie(remT, wstr1, w1, v);
 			}else{
           /* Add to replace-operations trie */
@@ -217,8 +217,8 @@ sprintf(buff, "Add: %s", wstr2);
               wstr1 = makeStringToIgnoreCase(wstr1, w1);
               wstr2 = makeStringToIgnoreCase(wstr2, w2);
           }
-          sprintf(buff, "Replace: %s <-> %s", wstr1, wstr2);
-                    LOGD(buff);
+  //        sprintf(buff, "Replace: %s <-> %s", wstr1, wstr2);
+                  //  LOGD(buff);
           addToTrie(wstr1, w1, wstr2,v);
           free(string2);
           free(wstr1);

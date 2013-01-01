@@ -88,13 +88,13 @@ void releaseEntryValue(JNIEnv* pEnv, StoreEntry* pEntry) {
             }
             free(pEntry->mValue.mStringArray);
             break;
- /*       case StoreType_ColorArray:
+        case StoreType_ResultArray:
             // Unreferences every Id before releasing the Id array.
             for (i = 0; i < pEntry->mLength; ++i) {
-                (*pEnv)->DeleteGlobalRef(pEnv, pEntry->mValue.mColorArray[i]);
+                (*pEnv)->DeleteGlobalRef(pEnv, pEntry->mValue.mResultArray[i]);
             }
-            free(pEntry->mValue.mColorArray);
-            break; */
+            free(pEntry->mValue.mResultArray);
+            break;
     }
 }
 

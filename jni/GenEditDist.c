@@ -21,6 +21,7 @@
 *
 */
 
+#include <jni.h>
 #include <stdio.h>
 #include <string.h>
 #include <float.h>
@@ -28,11 +29,17 @@
 #include <locale.h>
 #include <wctype.h>
 #include <unistd.h>  /* For parsing command line args. */
-
+#include "NativeGed.h"
 #include "FindEditDistanceMod.h"  /* Methods for calculating generalized edit distance. */
 #include <android/log.h>
+#include "GenEditDist.h"
 #define TAG "ged.jni.GenEditDist"
 #define LOGD(x) __android_log_print(ANDROID_LOG_DEBUG, TAG, x)
+#define LOGE(x) __android_log_print(ANDROID_LOG_ERROR, TAG, x)
+
+SRES 	*resultArray = NULL;
+int 	num_elements = 0; // To keep track of the number of elements used
+int		num_allocated = 0; // This is essentially how large the array is
 
 
 /**
@@ -276,6 +283,8 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen){
     return searchString;
 }
 
+
+
 /**
 *  Finds generalized edit distances between \a string and each word in \a file, outputs 
 *  matches with distance <i>less than or equal to</i> \c editD . According to contents of
@@ -300,6 +309,7 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD, char
     wchar_t* wstr     = NULL;
     wchar_t* wstr_new = NULL;
     int wLen;
+
 
     datalen = strlen(file);
     str = malloc(2);
@@ -367,8 +377,11 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD, char
         if(fullED <= editD || prefED <= editD || suffED <= editD || infxED <= editD){
 
 char buff[100];
-        		  sprintf(buff, "Score: %1.2f for %s", fullED, str);
-        		  LOGD(buff);
+
+SRES temp;
+temp.result = malloc((strlen(str) + 1) * sizeof(char));
+		strncpy(temp.result, str, strlen(str) + 1);
+
 
             puts("------------------------");
             if (printLineNumbers){
@@ -382,27 +395,38 @@ char buff[100];
                  case L_FULL:
                 	 sprintf(buff, "Score full: %1.2f for %s", fullED, str);
                 	         		  LOGD(buff);
-                              printf("%f", fullED);
+                          //    printf("%f", fullED);
+                	         		 temp.distance = fullED;
                               break;
                  case L_PREFIX:
-                	 sprintf(buff, "Score pre: %1.2f for %s", fullED, str);
+                	 sprintf(buff, "Score pre: %1.2f for %s", prefED, str);
                 	         		  LOGD(buff);
-                              printf("%f", prefED);
+                	         		 temp.distance = prefED;
                               break;
                  case L_SUFFIX:
-                	 sprintf(buff, "Score suf: %1.2f for %s", fullED, str);
+                	 sprintf(buff, "Score suf: %1.2f for %s", suffED, str);
                 	         		  LOGD(buff);
-                              printf("%f", suffED);
+                	         		 temp.distance = suffED;
                               break;
                  case L_INFIX:
-                	 sprintf(buff, "Score in: %1.2f for %s", fullED, str);
+                	 sprintf(buff, "Score in: %1.2f for %s", infxED, str);
                 	         		  LOGD(buff);
-                              printf("%f", infxED);
+                	         		 temp.distance = infxED;
                               break;
               }
-              printf(" ");
+              temp.type = pos;
+
             }
-            printf("\n");
+
+            if (AddToArray(temp) == -1)
+            	LOGE("Error adding to array");
+            else{
+            	sprintf(buff, "\n%d allocated, %d used\n", num_allocated, num_elements);
+            	LOGD(buff);
+            }
+
+
+
         }
 
         free(wstr);
@@ -416,8 +440,48 @@ char buff[100];
         i = j;
     }
     free(str);
+    int ci1 = 0;
+    /*for(ci1=0; ci1<num_elements;ci1++){
+    	free(resultArray[ci1].result);
+    }
+    free(resultArray);
+    LOGD("Array free!"); */
     return 0;
 }
+
+int AddToArray (SRES item)
+{
+	if(num_elements == num_allocated) { // Are more refs required?
+
+		// Feel free to change the initial number of refs and the rate at which refs are allocated.
+		if (num_allocated == 0)
+			num_allocated = 10; // Start off with 3 refs
+		else
+			num_allocated *= 2; // Double the number of refs allocated
+
+		// Make the reallocation transactional by using a temporary variable first
+		void *_tmp = realloc(resultArray, (num_allocated * sizeof(SRES)));
+
+		// If the reallocation didn't go so well, inform the user and bail out
+		if (!_tmp)
+		{
+			LOGE("ERROR: Couldn't realloc memory!");
+			return(-1);
+		}
+
+		// Things are looking good so far, so let's set the
+		resultArray = (SRES*)_tmp;
+	}
+
+	resultArray[num_elements] = item;
+	num_elements++;
+
+	return num_elements;
+}
+
+
+
+
 
 /**
 *  Finds generalized edit distances between \a string and each word in \a file, outputs 
@@ -555,7 +619,7 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag){
 *  (format described in output of \c helpInfo()) and performs generalized edit
 *  distance calculations.
 */
-int doAll(/*int argc, char* argv[] */){
+int doAll(Store* pStore/*int argc, char* argv[] */){
 
   // file definitions
 	char *filename = "/mnt/sdcard/ged/en-et-merli-markko-lt.txt";

@@ -54,9 +54,11 @@ public class SearchProcessor implements Runnable {
 			
 		}
 	//	nativeGed.setTransformationContent(transstrings);
-		nativeGed.createTrie();
+		String[] searchres =  nativeGed.process();
 		nativeGed.finalizeStore();
-		
+		for (String res : searchres) {
+			Log.d(TAG, res);
+		}
 		dict.unload();
 	}
 	

@@ -2,12 +2,21 @@ package ee.ut.ta.search;
 
 public class SearchResult {
 	
-	private int word;
+	private String word;
 	private double distance;
-	public void setWord(int word) {
+	private int type;
+	
+	public SearchResult(String pWord, double pDist, int pType){
+		word  = pWord;
+		distance = pDist;
+		type = pType;
+	}
+	
+	
+	public void setWord(String word) {
 		this.word = word;
 	}
-	public int getWord() {
+	public String getWord() {
 		return word;
 	}
 	public void setDistance(double distance) {
@@ -15,6 +24,12 @@ public class SearchResult {
 	}
 	public double getDistance() {
 		return distance;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public int getType() {
+		return type;
 	}
 
 }

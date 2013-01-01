@@ -58,9 +58,9 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setTransformationConte
 /*
  * Class:     ee_ut_ta_search_ged_NativeGed
  * Method:    createTrie
- * Signature: ()V
+ * Signature: ()[Ljava/lang/String;
  */
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_createTrie
+JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus
