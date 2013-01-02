@@ -25,6 +25,9 @@ int32_t isEntryValid(JNIEnv* pEnv, StoreEntry* pEntry,
 
 StoreEntry* findEntry(JNIEnv* pEnv, Store* pStore, char* pKey,
                       int32_t* pError) {
+	char buff[100];
+	sprintf(buff, "find: %s", pKey);
+	LOGD(buff);
     StoreEntry* lEntry = pStore->mEntries;
     StoreEntry* lEntryEnd = lEntry + pStore->mLength;
 
@@ -32,7 +35,12 @@ StoreEntry* findEntry(JNIEnv* pEnv, Store* pStore, char* pKey,
         && (strcmp(lEntry->mKey, pKey) != 0)) {
         ++lEntry;
     }
+if(lEntry == lEntryEnd){
+	LOGD("find: null");
 
+}else {
+	LOGD("Found");
+}
     return (lEntry == lEntryEnd) ? NULL : lEntry;
 }
 

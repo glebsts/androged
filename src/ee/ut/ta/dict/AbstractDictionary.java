@@ -17,6 +17,7 @@ abstract class AbstractDictionary implements IDictionary {
 	private String description;
 	private String fileName;
 	private String letterFileName;
+	private String transformationFileName;
 	private int transformationFileId;
 	private IDictionaryStorage storage;
 
@@ -62,6 +63,14 @@ abstract class AbstractDictionary implements IDictionary {
 
 	public void setTransformationFileId(int transformationFileId) {
 		this.transformationFileId = transformationFileId;
+	}
+
+	public String getTransformationFileName() {
+		return transformationFileName;
+	}
+	
+	public void setTransformationFileName(String transformationFileName) {
+		this.transformationFileName = transformationFileName;
 	}
 
 	public int getTransformationFileId() {

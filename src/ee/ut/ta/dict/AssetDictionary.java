@@ -57,6 +57,7 @@ public class AssetDictionary extends AbstractDictionary {
 				transformations = new ArrayList<Transformation>();
 			}
 			ITransformationFile file = this.getStorage().getTransformationStorage().getTransformationFileById(this.getTransformationFileId());
+			this.setTransformationFileName(file.getFileName());
 			this.transformations = file.getTransformations(ctx);
 		} catch (Exception e) {
 			Log.e(TAG, "Error loading transformations: " + e.getMessage());

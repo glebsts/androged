@@ -25,14 +25,6 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_finalizeStore
 
 /*
  * Class:     ee_ut_ta_search_ged_NativeGed
- * Method:    setSearchTerm
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchTerm
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     ee_ut_ta_search_ged_NativeGed
  * Method:    setSearchOptions
  * Signature: ([Z)V
  */
@@ -57,11 +49,19 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setTransformationConte
 
 /*
  * Class:     ee_ut_ta_search_ged_NativeGed
- * Method:    createTrie
+ * Method:    process
  * Signature: ()[Ljava/lang/String;
  */
 JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process
   (JNIEnv *, jobject);
+
+/*
+ * Class:     ee_ut_ta_search_ged_NativeGed
+ * Method:    setGedData
+ * Signature: (Ljava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData
+  (JNIEnv *, jobject, jstring, jint);
 
 #ifdef __cplusplus
 }

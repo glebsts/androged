@@ -68,7 +68,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		btnStartSearch.setOnClickListener(startSearchClickHandler);
 
 		txtSearchTerm = (EditText) findViewById(R.id.txtSearchTerm);
-		txtSearchTerm.setText("a");
+		txtSearchTerm.setText("paket");
 	}
 
 	Button.OnClickListener startSearchClickHandler = new Button.OnClickListener() {

@@ -26,5 +26,7 @@ public interface IDictionary {
 	public void unload();
 	public IDictionaryStorage getStorage();
 	public void setStorage(IDictionaryStorage storage);
+	public String getTransformationFileName();
+	public void setTransformationFileName(String transformationFileName);
 	
 }

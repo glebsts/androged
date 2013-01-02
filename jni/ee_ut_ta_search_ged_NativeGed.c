@@ -18,7 +18,14 @@
 #define SEARCHOPTIONS_KEY "SearchOptions"
 #define WORDS_KEY "Words"
 #define TRANS_KEY "Transformations"
+#define LETTERS_KEY "Letters"
 #define RESULT_KEY "Results"
+
+#define SEARCHTERM_IDX 1
+#define WORDS_IDX 2
+#define TRANS_IDX 3
+#define LETTERS_IDX 4
+
 #define TAG "ged.jni.nativewrapper"
 #define LOGD(x) __android_log_print(ANDROID_LOG_DEBUG, TAG, x)
 #define LOGE(x) __android_log_print(ANDROID_LOG_ERROR, TAG, x)
@@ -56,11 +63,6 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_finalizeStore(
 
 JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchTerm(
 		JNIEnv* pEnv, jobject pThis, jstring pSearchTerm) {
-	// Turns the Java string into a temporary C string.
-	// GetStringUTFChars() is used here as an example but
-	// Here, GetStringUTFChars() to show
-	// the way it works. But as what we want is only a copy,
-	// GetBooleanArrayRegion() would be be more efficient.
 
 	const char* lStringTmp =
 			(*pEnv)->GetStringUTFChars(pEnv, pSearchTerm, NULL);
@@ -68,13 +70,11 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchTerm(
 		LOGD("NULL on getChars");
 		return;
 	}
-	//LOGD(printf("Value %s received.", lStringTmp));
+
 	StoreEntry* lEntry = allocateEntry(pEnv, &mStore, SEARCHTERM_KEY);
 	if (lEntry != NULL) {
 		lEntry->mType = StoreType_String;
-		// Copy the temporary C string into its dynamically allocated
-		// final location. Then releases the temporary string.
-		// Malloc return value should theoretically be checked...
+
 		jsize lStringLength = (*pEnv)->GetStringUTFLength(pEnv, pSearchTerm);
 		lEntry->mValue.mString = (char*) malloc(
 				sizeof(char) * (lStringLength + 1));
@@ -235,7 +235,7 @@ extern int num_allocated;
 JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 		JNIEnv* pEnv, jobject pThis) {
 
-	doAll(&mStore);
+	doAll(pEnv, &mStore);
 
 	jobjectArray lJavaArray;
 	char buff[100];
@@ -314,39 +314,6 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 
 	}
 
-	/*
-	 t = createTrie();
-	 addT = createARTrie();
-	 remT = createARTrie();
-
-	 StoreEntry* lEntry = findEntry(pEnv, &mStore, TRANS_KEY, NULL);
-	 if (isEntryValid(pEnv, lEntry, StoreType_StringArray)) {
-	 char buff[100];
-	 sprintf(buff, "Entry valid, len: %d", lEntry->mLength);
-	 LOGD(buff);
-
-	 char *data;
-	 data = (char *)readFile("/mnt/sdcard/ged/en-et-merli-markko-lt.txt");
-	 sprintf(buff, "tf file len: %d", strlen(data));
-	 LOGD(buff);
-	 trieFromFile(data);
-	 LOGD("Trie created");
-
-	 data = (char *)readFile("/mnt/sdcard/ged/en_et_03_01_2007_EN_utf8.vp");
-	 sprintf(buff, "wrd file len: %d", strlen(data));
-	 LOGD(buff);
-
-
-	 if (t != NULL){
-	 freeTrie(t);
-	 LOGD("Trie free");
-	 }
-
-	 }else {
-	 LOGE("Entry is invalid!!");
-	 }
-	 LOGD("exit createTrie");
-	 */
 }
 
 JNIEXPORT jobjectArray JNICALL Java_com_packtpub_Store_getStringArray(
@@ -395,3 +362,48 @@ JNIEXPORT jobjectArray JNICALL Java_com_packtpub_Store_getStringArray(
 		return NULL;
 	}
 }
+
+JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData(
+		JNIEnv* pEnv, jobject pThis, jstring pString, jint type) {
+
+
+	const char* lStringTmp = (*pEnv)->GetStringUTFChars(pEnv, pString, NULL);
+	if (lStringTmp == NULL) {
+		return;
+	}
+
+	char buff[100];
+	sprintf(buff, "String: %s, type: %d", lStringTmp, type);
+	LOGD(buff);
+
+	char* pKey = "";
+	switch (type) {
+	case SEARCHTERM_IDX:
+		pKey = SEARCHTERM_KEY;
+		break;
+	case WORDS_IDX:
+		pKey = WORDS_KEY;
+		break;
+
+	case TRANS_IDX:
+		pKey = TRANS_KEY;
+		break;
+
+	case LETTERS_IDX:
+		pKey = LETTERS_KEY;
+		break;
+	default:
+		break;
+	}
+	StoreEntry* lEntry = allocateEntry(pEnv, &mStore, pKey);
+	if (lEntry != NULL) {
+		lEntry->mType = StoreType_String;
+
+		jsize lStringLength = (*pEnv)->GetStringUTFLength(pEnv, pString);
+		lEntry->mValue.mString = (char*) malloc(
+				sizeof(char) * (lStringLength + 1));
+		strcpy(lEntry->mValue.mString, lStringTmp);
+	}
+	(*pEnv)->ReleaseStringUTFChars(pEnv, pString, lStringTmp);
+}
+

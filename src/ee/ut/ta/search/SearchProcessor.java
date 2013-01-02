@@ -28,34 +28,31 @@ public class SearchProcessor implements Runnable {
 		dict.getTransformations(ctx);
 		// case-sensitive?
 		
-	/*	Trie trie = new Trie();
-		List<String> words =dict.getWords(); 
-		for(int i=0;i<words.size();i++){
-			trie.insertString(words.get(i));
-			if(i % 1000 == 0){
-				Log.d(TAG, Integer.toString(i) + ": "+ Double.toString(android.os.Debug.getNativeHeapAllocatedSize()/1024/1024));
-
-			}
-		}
-		*/
-		
 	/*	jniStoreWords(dict.getWords().toArray(new String[dict.getWords().size()])); */
 		
 		NativeGed nativeGed = new NativeGed();
 		nativeGed.initializeStore();
-		nativeGed.setSearchTerm(searchTerm);
+		nativeGed.setSearchTerm2(searchTerm);
 		nativeGed.setSearchOptions(new boolean[]{searchOptions.getExactMatches(), searchOptions.getBeginningMatch(),
 				searchOptions.getMiddleMatch(), searchOptions.getEndingMatch(), searchOptions.getCaseSensitive()});
 		
+		
+		
+		
+		nativeGed.setDictionaryFileName("/mnt/sdcard/ged/"+dict.getFileName());
+		nativeGed.setTransformationFileName("/mnt/sdcard/ged/"+dict.getTransformationFileName());
+		nativeGed.setLetterFileName("/mnt/sdcard/ged/"+dict.getLetterFileName());
+		
 	//	nativeGed.setDictionaryContent(dict.getWords().toArray(new String[dict.getWords().size()]));
-		String[] transstrings = new String[dict.getTransformations().size()];
-		for(int i=0;i<transstrings.length;i++){
-			transstrings[i]=dict.getTransformations().get(i).toString();
+//		String[] transstrings = new String[dict.getTransformations().size()];
+//		for(int i=0;i<transstrings.length;i++){
+	//		transstrings[i]=dict.getTransformations().get(i).toString();
 			
-		}
+//		}
 	//	nativeGed.setTransformationContent(transstrings);
 		String[] searchres =  nativeGed.process();
 		nativeGed.finalizeStore();
+		
 		for (String res : searchres) {
 			Log.d(TAG, res);
 		}
