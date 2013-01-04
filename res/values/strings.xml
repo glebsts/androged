@@ -15,9 +15,11 @@
     <string name="btnSearchOptions">Set search options</string>
     <string name="btnSOOk">OK</string>
     <string name="btnSOCancel">Cancel</string>
-    <string name="lblMaxEditDistance">Max edit distance:</string>
+    <string name="lblMaxEditDistance">MaxED:</string>
+    <string name="lblBest">Best:</string>
     <string name="lblSearchTerm">Word:</string>
-    <string name="txtMaxEditDistanceDefaultValue">1.5</string>
+    <string name="txtMaxEditDistanceDefaultValue">0.5</string>
+    <string name="txtBestDefaultValue">10</string>
     <string name="txtSearchTermHint">Search term</string>
     <string name="btnStartSearch">I\'m feeling lucky!</string>
 

@@ -21,6 +21,7 @@
 #define LETTERS_KEY "Letters"
 #define RESULT_KEY "Results"
 #define DISTANCE_KEY "MaxDistance"
+#define BEST_KEY "Best"
 
 #define SEARCHTERM_IDX 1
 #define WORDS_IDX 2
@@ -242,13 +243,13 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 	char buff[100];
 	if (resultArray != NULL && num_elements>0) {
 
-/*		int ci1 = 0;
+	/*	int ci1 = 0;
 		for (ci1 = 0; ci1 < num_elements; ci1++) {
 			sprintf(buff, "%d: %s %1.2f %d", ci1, resultArray[ci1].result,
 					resultArray[ci1].distance, resultArray[ci1].type);
 			LOGD(buff);
-		}
-*/
+		}*/
+
 		///////------------------------------------------------------
 
 		jclass lStringClass = (*pEnv)->FindClass(pEnv, "java/lang/String");
@@ -273,9 +274,9 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 
 			char buff2[100];
 
-			sprintf(buff2, "%d|%s|%1.2f|%d", i, resultArray[i].result,
+			sprintf(buff2, "%d|%s|%f|%d", i, resultArray[i].result,
 					resultArray[i].distance, resultArray[i].type);
-	//		LOGD(buff2);
+			LOGD(buff2);
 			jstring lString = (*pEnv)->NewStringUTF(pEnv, buff2);
 			if (lString == NULL) {
 				LOGD("lString is null");
@@ -301,12 +302,12 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 		}
 
 		///////------------------------------------------------------
-
-
+//sprintf(buff, "n_e: %d", num_elements);
+//LOGD(buff);
 		for (i = 0; i < num_elements; i++) {
 			free(resultArray[i].result);
 		}
-
+//LOGD("result fields free");
 		free(resultArray);
 		num_allocated = 0;
 		num_elements = 0;
@@ -419,5 +420,14 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setMaxEditDist
 	        lEntry->mType = StoreType_Double;
 	        lEntry->mValue.mDouble = pDistance;
 	    }
+}
+
+JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setBest
+  (JNIEnv* pEnv, jobject pThis, jint pInteger) {
+    StoreEntry* lEntry = allocateEntry(pEnv, &mStore, BEST_KEY);
+    if (lEntry != NULL) {
+        lEntry->mType = StoreType_Integer;
+        lEntry->mValue.mInteger = pInteger;
+    }
 }
 

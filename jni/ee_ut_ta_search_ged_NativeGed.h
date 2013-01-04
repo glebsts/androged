@@ -71,6 +71,14 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData
 JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setMaxEditDist
   (JNIEnv *, jobject, jdouble);
 
+/*
+ * Class:     ee_ut_ta_search_ged_NativeGed
+ * Method:    setBest
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setBest
+  (JNIEnv *, jobject, jint);
+
 #ifdef __cplusplus
 }
 #endif

@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	Spinner cmbDictionary;
 	Button btnSearchOptions;
 	Button btnStartSearch;
-	EditText txtSearchTerm, txtMaxEditDistance;
+	EditText txtSearchTerm, txtMaxEditDistance, txtBest;
 	ExpandableListView elvResults;
 
 	// adapters
@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		txtSearchTerm = (EditText) findViewById(R.id.txtSearchTerm);
 		txtSearchTerm.setText("paket");
 		txtMaxEditDistance = (EditText) findViewById(R.id.txtMaxEditDistance);
+		txtBest = (EditText) findViewById(R.id.txtBest);
 
 		elvResults = (ExpandableListView) findViewById(R.id.elvResults);
 	}
@@ -88,25 +89,49 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 			}
 
 			double maxDistance = -1;
-			if (txtMaxEditDistance.getText().length() == 0) {
-				txtMaxEditDistance.requestFocus();
-				return;
-			}
-			try {
-				maxDistance = Double.parseDouble(txtMaxEditDistance.getText()
-						.toString());
-			} catch (NumberFormatException exc) {
-				txtMaxEditDistance.requestFocus();
-				return;
-			}
-			if (maxDistance <= 0) {
-				txtMaxEditDistance.requestFocus();
-				return;
-			}
+			int best = -1;
+			if (txtMaxEditDistance.getText().length() != 0) {
 
-			searchProcessor = new SearchProcessor(getApplicationContext(), gedHandler,
-					txtSearchTerm.getText().toString(), searchOptions,
-					dictionaries.get(selectedDictionary), maxDistance);
+				try {
+					maxDistance = Double.parseDouble(txtMaxEditDistance
+							.getText().toString());
+				} catch (NumberFormatException exc) {
+					txtMaxEditDistance.requestFocus();
+					return;
+				}
+				if (maxDistance <= 0) {
+					txtMaxEditDistance.requestFocus();
+					return;
+				}
+				best = -1;
+
+			}else {
+				if (txtBest.getText().length() != 0) {
+					try {
+						best = Integer.parseInt(txtBest
+								.getText().toString());
+					} catch (NumberFormatException exc) {
+						txtBest.requestFocus();
+						return;
+					}
+					if (best <= 0) {
+						txtBest.requestFocus();
+						return;
+					}
+					maxDistance = -1;
+				}
+			}
+			if((maxDistance < 0 && best<0) || (maxDistance>0 && best>0)){
+				Toast.makeText(getApplicationContext(),
+						"Only max edit distance XOR best must be set and > 0.",
+						Toast.LENGTH_LONG).show();
+				txtMaxEditDistance.requestFocus();
+				return;
+			}
+			searchProcessor = new SearchProcessor(getApplicationContext(),
+					gedHandler, txtSearchTerm.getText().toString(),
+					searchOptions, dictionaries.get(selectedDictionary),
+					maxDistance, best);
 			disableUI();
 			searchThread = new Thread(null, searchProcessor, "Search thread");
 			searchThread.start();
@@ -118,7 +143,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	final Handler gedHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			enableUI();
-			Log.d(TAG, "Message! "+msg.obj.toString());
+			Log.d(TAG, "Message! " + msg.obj.toString());
 			setResults((Long) msg.obj);
 		}
 
@@ -207,26 +232,29 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	}
 
 	protected void setResults(long time) {
-		if(searchProcessor!=null){
-			if(searchProcessor.getResults()!=null){
-				searchResultAdapter = new SearchResultExpandableListAdapter(searchProcessor.getResults(), getApplicationContext());
+		if (searchProcessor != null) {
+			if (searchProcessor.getResults() != null) {
+				searchResultAdapter = new SearchResultExpandableListAdapter(
+						searchProcessor.getResults(), getApplicationContext());
 				elvResults.setAdapter(searchResultAdapter);
 			}
-			Toast.makeText( getApplicationContext(),
-					 String.format("Time: %1.2f sec", time/1000.0) ,
-					  Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(),
+					String.format("Time: %1.2f sec", time / 1000.0),
+					Toast.LENGTH_LONG).show();
 		}
-		
+
 	}
 
 	protected void enableUI() {
-		// TODO Auto-generated method stub
-		
+		btnSearchOptions.setEnabled(true);
+		btnStartSearch.setEnabled(true);
+
 	}
 
 	protected void disableUI() {
-		// TODO Auto-generated method stub
-		
+		btnSearchOptions.setEnabled(false);
+		btnStartSearch.setEnabled(false);
+
 	}
 
 	@Override

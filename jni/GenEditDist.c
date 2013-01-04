@@ -44,6 +44,7 @@
 #define RESULT_KEY "Results"
 #define LETTERS_KEY "Letters"
 #define DISTANCE_KEY "MaxDistance"
+#define BEST_KEY "Best"
 SRES *resultArray = NULL;
 int num_elements = 0; // To keep track of the number of elements used
 int num_allocated = 0; // This is essentially how large the array is
@@ -366,11 +367,6 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 
 		// find different types of matches, according to flagsInPositions
 		int pos = 0;
-		if (flagsShown == 0) {
-			LOGD("Before while");
-			sprintf(buff, "Pos = %d, MaxFP = %d", pos, FP_MAX_POSITIONS);
-			LOGD(buff);
-		};
 		while ((pos < FP_MAX_POSITIONS) /*&& (flagsInPositions[pos] != L_EMPTY)*/) {
 			/*while ((pos < FP_MAX_POSITIONS)) {
 			 if((flagsInPositions[pos] == L_EMPTY) && flagsShown==0){
@@ -378,63 +374,42 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 			 LOGD(buff);
 			 continue;
 			 }*/
-			if (flagsShown == 0) {
-				sprintf(buff, "Flag[%d]=%d", pos, flagsInPositions[pos]);
-				LOGD(buff);
-			}
+
 			switch (flagsInPositions[pos++]) {
 			case L_FULL:
-				if (fS == 0) {
-					LOGD("fS");
-					fS++;
-				}
+
 				fullED = genEditDistance_full(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_PREFIX:
-				if (bS == 0) {
-					LOGD("prefix");
-					bS++;
-				}
 				prefED = genEditDistance_prefix(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_SUFFIX:
-				if (eS == 0) {
-					LOGD("suffix");
-					eS++;
-				}
 				suffED = genEditDistance_suffix(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_INFIX:
-				if (mS == 0) {
-					LOGD("infix");
-					mS++;
-				}
 				infxED = genEditDistance_middle(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			}
 		}
-		if (flagsShown == 0) {
-			LOGD("After while");
-		}
-		flagsShown++;
+
 		if (fullED <= editD || prefED <= editD || suffED <= editD || infxED
 				<= editD) {
 
 			char buff[100];
 
-		//	puts("------------------------");
+			//	puts("------------------------");
 			if (printLineNumbers) {
-			//	printf("%ld\n", lineNR);
+				//	printf("%ld\n", lineNR);
 			}
-			puts(str);
+			//		puts(str);
 			// print different scores, according to flagsInPositions
 			pos = 0;
 			while ((pos < FP_MAX_POSITIONS)/* && (flagsInPositions[pos]
@@ -444,8 +419,8 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 				temp.distance = -1;
 				switch (flagsInPositions[pos++]) {
 				case L_FULL:
-				//	sprintf(buff, "Score full: %1.2f for %s", fullED, str);
-				//	LOGD(buff);
+					//	sprintf(buff, "Score full: %1.2f for %s", fullED, str);
+					//	LOGD(buff);
 					//    printf("%f", fullED);
 					if (fullED <= editD) {
 						temp.result = malloc((strlen(str) + 1) * sizeof(char));
@@ -455,8 +430,8 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 					}
 					break;
 				case L_PREFIX:
-				//	sprintf(buff, "Score pre: %1.2f for %s", prefED, str);
-				//	LOGD(buff);
+					//	sprintf(buff, "Score pre: %1.2f for %s", prefED, str);
+					//	LOGD(buff);
 					if (prefED <= editD) {
 						temp.result = malloc((strlen(str) + 1) * sizeof(char));
 						strncpy(temp.result, str, strlen(str) + 1);
@@ -465,8 +440,8 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 					}
 					break;
 				case L_SUFFIX:
-				//	sprintf(buff, "Score suf: %1.2f for %s", suffED, str);
-				//	LOGD(buff);
+					//	sprintf(buff, "Score suf: %1.2f for %s", suffED, str);
+					//	LOGD(buff);
 					if (suffED <= editD) {
 						temp.result = malloc((strlen(str) + 1) * sizeof(char));
 						strncpy(temp.result, str, strlen(str) + 1);
@@ -475,8 +450,8 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 					}
 					break;
 				case L_INFIX:
-				//	sprintf(buff, "Score in: %1.2f for %s", infxED, str);
-				//	LOGD(buff);
+					//	sprintf(buff, "Score in: %1.2f for %s", infxED, str);
+					//	LOGD(buff);
 					if (infxED <= editD) {
 						temp.result = malloc((strlen(str) + 1) * sizeof(char));
 						strncpy(temp.result, str, strlen(str) + 1);
@@ -490,9 +465,9 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 					if (AddToArray(temp) == -1)
 						LOGD("Error adding to array");
 					else {
-					//	sprintf(buff, "\n%d allocated, %d used\n",
-					//			num_allocated, num_elements);
-					//	LOGD(buff);
+						//	sprintf(buff, "\n%d allocated, %d used\n",
+						//			num_allocated, num_elements);
+						//	LOGD(buff);
 						//free(temp.result);
 					}
 				} /*else {
@@ -514,8 +489,8 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 		i = j;
 	}
 	free(str);
-	int ci1 = 0;
-	/*for(ci1=0; ci1<num_elements;ci1++){
+	/*	int ci1 = 0;
+	 for(ci1=0; ci1<num_elements;ci1++){
 	 free(resultArray[ci1].result);
 	 }
 	 free(resultArray);
@@ -651,9 +626,11 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag) {
 	 *  the number of best results can be exceeded.
 	 */
 	long countBest = 0;
+	char buff[100];
 	while (item != NULL) {
-		puts("------------------------");
-		printf("%f \n", item->value);
+		//	puts("------------------------");
+		//	printf("%f \n", item->value);
+
 		index = item->index;
 		while (index != NULL) {
 			str = (char *) realloc(str, (index->j - index->i + 1));
@@ -664,7 +641,19 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag) {
 
 			str[index->j - index->i] = '\0';
 			strncpy(str, (file + index->i), (index->j - index->i));
-			puts(str);
+			sprintf(buff, "Best: 0|%s|%f|%d", str, item->value, flag);
+			LOGD(buff);
+
+			//puts(str);
+			SRES temp;
+			temp.distance = item->value;
+			temp.result = malloc((strlen(str) + 1) * sizeof(char));
+			strncpy(temp.result, str, strlen(str) + 1);
+			temp.type = flag;
+			if (temp.distance >= 0) {
+				if (AddToArray(temp) == -1)
+					LOGD("Error adding to array");
+			}
 
 			index = index->nextIndex;
 			countBest++;
@@ -736,7 +725,15 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 	// Number of best results (costs)
 	// If the value is >= 0, number of best matches will be output
 	int best = -1;
+	lEntry = findEntry(pEnv, pStore, BEST_KEY, NULL);
+	if (lEntry == NULL) {
+		best = -1;
+	} else {
+		best = lEntry->mValue.mInteger;
+	}
 
+	sprintf(buff, "Best set to %d", best);
+	LOGD(buff);
 	// Maximum edit distance threshold
 	// If the value is >= 0, all matches having distance >= max will be output;
 	double max = -1.0;
@@ -825,12 +822,13 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 	 }
 	 */
 	// EXACTLY ONE of the flags '-b' and '-m' must be set
-	/*  if ((best < 0 && max < 0.0) || (best >= 0 && max >= 0.0)){
-	 printf("Exactly one of the flags '-b' and '-m' must be set; \n");
-	 //	 helpInfo(argv[0]);
-	 return 1;
-	 }
-	 */
+	if ((best < 0 && max < 0.0) || (best >= 0 && max >= 0.0)) {
+		sprintf(buff, "Exactly one of the flags '-b' and '-m' must be set;");
+		LOGD(buff);
+		//	 helpInfo(argv[0]);
+		return 1;
+	}
+
 	// Parse remaining arguments
 	/*  int i;
 	 for (i = 0; optind + i < argc; i++){
@@ -854,11 +852,11 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 	addT = createARTrie();
 	remT = createARTrie();
 
-	sprintf(buff, "after trie creation, filename= %s", filename);
+	//sprintf(buff, "after trie creation, filename= %s", filename);
 	/* read transformations file and build trie-structures */
 	data = (char *) readFile(filename);
 	trieFromFile(data);
-	LOGD("after triefromfile");
+	//LOGD("after triefromfile");
 	/* the search word */
 	wSearch = (wchar_t*) localeToWchar(searchString);
 	wlen = mbstowcs(NULL, searchString, 0);
@@ -869,7 +867,7 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 		//printf(" (%ls) (%i) \n", wSearch, wlen);
 	}
 
-	LOGD("before read words");
+	//	LOGD("before read words");
 
 	/* read dictionary file */
 	words = (char *) readFile(wordsFile);

@@ -70,7 +70,7 @@ public class SearchResultExpandableListAdapter extends BaseExpandableListAdapter
         TextView textWord = (TextView) convertView.findViewById(R.id.lblResultWord);
         textWord.setText(mGroups.get(groupPosition).get(childPosition).getWord());
         TextView textDistance = (TextView) convertView.findViewById(R.id.lblResultDescription);
-        textDistance.setText(String.format("%1.2f",mGroups.get(groupPosition).get(childPosition).getDistance()));
+        textDistance.setText(String.format("%f",mGroups.get(groupPosition).get(childPosition).getDistance()));
          
 
         return convertView;
@@ -104,14 +104,15 @@ public class SearchResultExpandableListAdapter extends BaseExpandableListAdapter
             convertView = inflater.inflate(R.layout.group_view, null);
         }
 
-		String grpTitle = this.getGroupTitle(groupPosition);
+		String grpTitle = String.format("%s (%d items)", this.getGroupTitle(groupPosition),
+				((ArrayList<SearchResultGroup>) this.getGroup(groupPosition)).size());
 		
-        if (isExpanded){
+    /*    if (isExpanded){
            grpTitle = String.format("%s", grpTitle);
         }
         else{
         	grpTitle = String.format("%s", grpTitle);
-        }
+        } */
 
         TextView textGroup = (TextView) convertView.findViewById(R.id.lblGroup);
         textGroup.setText(grpTitle);

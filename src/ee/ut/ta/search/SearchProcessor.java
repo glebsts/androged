@@ -19,16 +19,18 @@ public class SearchProcessor implements Runnable {
 	static final String TAG = "ged.processor"; // tag for LogCat
 	private List<SearchResult> results;
 	private long runTime = 0;
-	private double maxEditDist = 0.5;
+	private double maxEditDist = -1;
+	private int best = -1;
 	private Handler threadHandler;
 
 	public SearchProcessor(Context pCtx, Handler gedHandler, String pSearchTerm,
-			SearchOptions pSearchOptions, IDictionary pDict, double pMaxEditDist) {
+			SearchOptions pSearchOptions, IDictionary pDict, double pMaxEditDist, int pBest) {
 		searchTerm = pSearchTerm;
 		searchOptions = pSearchOptions;
 		dict = pDict;
 		ctx = pCtx;
 		maxEditDist = pMaxEditDist;
+		best = pBest;
 		this.threadHandler = gedHandler;
 		Log.d(TAG,
 				"Created new SearchProcessor: " + searchTerm + " : "
@@ -55,6 +57,7 @@ public class SearchProcessor implements Runnable {
 		nativeGed.initializeStore();
 		nativeGed.setSearchTerm2(searchTerm);
 		nativeGed.setMaxEditDist2(maxEditDist);
+		nativeGed.setBest2(best);
 		nativeGed.setSearchOptions(new boolean[] {
 				searchOptions.getExactMatches(),
 				searchOptions.getBeginningMatch(),
