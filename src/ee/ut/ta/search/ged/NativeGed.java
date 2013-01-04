@@ -37,5 +37,11 @@ public native String[] process();
 //public native void setDictionaryFileName(String string);
 //public native void setTransformationFileName(String string);
 public native void setGedData(String string, int type);
+private native void setMaxEditDist(double maxEditDist);
+public void setMaxEditDist2(double maxEditDist) {
+	Log.d(TAG, String.format("Setting max dist to %1.2f:", maxEditDist));
+	this.setMaxEditDist(maxEditDist);
+	
+}
 
 }

@@ -26,8 +26,7 @@ int32_t isEntryValid(JNIEnv* pEnv, StoreEntry* pEntry,
 StoreEntry* findEntry(JNIEnv* pEnv, Store* pStore, char* pKey,
                       int32_t* pError) {
 	char buff[100];
-	sprintf(buff, "find: %s", pKey);
-	LOGD(buff);
+
     StoreEntry* lEntry = pStore->mEntries;
     StoreEntry* lEntryEnd = lEntry + pStore->mLength;
 
@@ -36,11 +35,13 @@ StoreEntry* findEntry(JNIEnv* pEnv, Store* pStore, char* pKey,
         ++lEntry;
     }
 if(lEntry == lEntryEnd){
-	LOGD("find: null");
+	sprintf(buff, "Key %s not found", pKey);
 
 }else {
-	LOGD("Found");
+	sprintf(buff, "Key %s found", pKey);
 }
+
+	LOGD(buff);
     return (lEntry == lEntryEnd) ? NULL : lEntry;
 }
 
@@ -66,7 +67,7 @@ sprintf(buff, "Value stored for %s ", pKey);
 
         lEntry->mKey = (char*) malloc(strlen(pKey));
            strcpy(lEntry->mKey, pKey);
-           LOGD("Allocator: after key malloc");
+       //    LOGD("Allocator: after key malloc");
 
         ++pStore->mLength;
         LOGD(buff);

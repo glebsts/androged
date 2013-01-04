@@ -20,6 +20,7 @@
 #define TRANS_KEY "Transformations"
 #define LETTERS_KEY "Letters"
 #define RESULT_KEY "Results"
+#define DISTANCE_KEY "MaxDistance"
 
 #define SEARCHTERM_IDX 1
 #define WORDS_IDX 2
@@ -239,33 +240,34 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 
 	jobjectArray lJavaArray;
 	char buff[100];
-	if (resultArray != NULL) {
+	if (resultArray != NULL && num_elements>0) {
 
-		int ci1 = 0;
+/*		int ci1 = 0;
 		for (ci1 = 0; ci1 < num_elements; ci1++) {
-			sprintf(buff, "%d: %s %1.2f", ci1, resultArray[ci1].result,
-					resultArray[ci1].distance);
+			sprintf(buff, "%d: %s %1.2f %d", ci1, resultArray[ci1].result,
+					resultArray[ci1].distance, resultArray[ci1].type);
 			LOGD(buff);
 		}
-
+*/
 		///////------------------------------------------------------
 
 		jclass lStringClass = (*pEnv)->FindClass(pEnv, "java/lang/String");
 		if (lStringClass == NULL) {
 			return NULL;
 		}
-		LOGD("lStringClass found");
+//		LOGD("lStringClass found");
 		lJavaArray = (*pEnv)->NewObjectArray(pEnv, num_elements, lStringClass,
 				NULL);
 		(*pEnv)->DeleteLocalRef(pEnv, lStringClass);
 		if (lJavaArray == NULL) {
 			return NULL;
 		}
-		LOGD("lJavaArray not NULL");
+	//	LOGD("lJavaArray not NULL");
 		// Creates a new Java String object for each C string stored.
 		// Reference to the String can be removed right after it is
 		// added to the Java array, as the latter holds a reference
 		// to the String object.
+
 		int32_t i;
 		for (i = 0; i < num_elements; ++i) {
 
@@ -273,20 +275,20 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 
 			sprintf(buff2, "%d|%s|%1.2f|%d", i, resultArray[i].result,
 					resultArray[i].distance, resultArray[i].type);
-			LOGD(buff2);
+	//		LOGD(buff2);
 			jstring lString = (*pEnv)->NewStringUTF(pEnv, buff2);
 			if (lString == NULL) {
 				LOGD("lString is null");
 				return NULL;
 			}
-			LOGD("before add to arr");
+		//	LOGD("before add to arr");
 			// Puts the new string in the array. Exception are
 			// checked because of SetObjectArrayElement() (can raise
 			// an ArrayIndexOutOfBounds or ArrayStore Exception).
 			// If one occurs, any object created here will be freed
 			// as they are all referenced locally only.
 			(*pEnv)->SetObjectArrayElement(pEnv, lJavaArray, i, lString);
-			LOGD("SetObjectArrayElement");
+			//LOGD("SetObjectArrayElement");
 			// Note that DeleteLocalRef() can still be called safely
 			// even if an exception is raised.
 
@@ -295,16 +297,19 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 				LOGD("EXC!");
 				return NULL;
 			}
-			LOGD("end of cycle");
+			//LOGD("end of cycle");
 		}
 
 		///////------------------------------------------------------
 
 
-		for (ci1 = 0; ci1 < num_elements; ci1++) {
-			free(resultArray[ci1].result);
+		for (i = 0; i < num_elements; i++) {
+			free(resultArray[i].result);
 		}
+
 		free(resultArray);
+		num_allocated = 0;
+		num_elements = 0;
 		LOGD("Array free!");
 		return lJavaArray;
 
@@ -373,8 +378,8 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData(
 	}
 
 	char buff[100];
-	sprintf(buff, "String: %s, type: %d", lStringTmp, type);
-	LOGD(buff);
+	//sprintf(buff, "String: %s, type: %d", lStringTmp, type);
+	//LOGD(buff);
 
 	char* pKey = "";
 	switch (type) {
@@ -405,5 +410,14 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData(
 		strcpy(lEntry->mValue.mString, lStringTmp);
 	}
 	(*pEnv)->ReleaseStringUTFChars(pEnv, pString, lStringTmp);
+}
+
+JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setMaxEditDist
+(JNIEnv* pEnv, jobject pThis, jdouble pDistance){
+	 StoreEntry* lEntry = allocateEntry(pEnv, &mStore, DISTANCE_KEY);
+	    if (lEntry != NULL) {
+	        lEntry->mType = StoreType_Double;
+	        lEntry->mValue.mDouble = pDistance;
+	    }
 }
 

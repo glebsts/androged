@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
+import ee.ut.ta.dict.transf.ITransformationFile;
 import ee.ut.ta.dict.transf.Transformation;
 
 abstract class AbstractDictionary implements IDictionary {
@@ -66,6 +67,10 @@ abstract class AbstractDictionary implements IDictionary {
 	}
 
 	public String getTransformationFileName() {
+		if(this.transformationFileName == null){
+			this.setTransformationFileName(this.getStorage().getTransformationStorage().
+					getTransformationFileById(this.getTransformationFileId()).getFileName());
+		}
 		return transformationFileName;
 	}
 	

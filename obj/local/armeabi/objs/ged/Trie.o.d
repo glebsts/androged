@@ -21,7 +21,8 @@ obj/local/armeabi/objs/ged/Trie.o: jni/Trie.c jni/Trie.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/memory.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/stdio.h \
  c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/locale.h \
- jni/List.h
+ jni/List.h \
+ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h
 
 jni/Trie.h:
 
@@ -70,3 +71,5 @@ c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/i
 c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/locale.h:
 
 jni/List.h:
+
+c:/android-ndk/android-ndk-r7-crystax-5.beta3/platforms/android-9/arch-arm/usr/include/android/log.h:

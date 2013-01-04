@@ -5,6 +5,8 @@ import java.util.List;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,13 +17,15 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 import ee.ut.ta.dict.AssetDictionaryStorage;
 import ee.ut.ta.dict.IDictionary;
 import ee.ut.ta.search.SearchOptions;
 import ee.ut.ta.search.SearchProcessor;
-import ee.ut.ta.search.ged.Trie;
 import ee.ut.ta.ui.DictionaryAdapter;
+import ee.ut.ta.ui.SearchResultExpandableListAdapter;
 
 public class MainActivity extends Activity implements OnItemSelectedListener {
 
@@ -41,10 +45,12 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	Spinner cmbDictionary;
 	Button btnSearchOptions;
 	Button btnStartSearch;
-	EditText txtSearchTerm;
+	EditText txtSearchTerm, txtMaxEditDistance;
+	ExpandableListView elvResults;
 
 	// adapters
 	DictionaryAdapter dictionaryAdapter;
+	SearchResultExpandableListAdapter searchResultAdapter;
 	private int selectedDictionary;
 
 	@Override
@@ -69,25 +75,53 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 		txtSearchTerm = (EditText) findViewById(R.id.txtSearchTerm);
 		txtSearchTerm.setText("paket");
+		txtMaxEditDistance = (EditText) findViewById(R.id.txtMaxEditDistance);
+
+		elvResults = (ExpandableListView) findViewById(R.id.elvResults);
 	}
 
 	Button.OnClickListener startSearchClickHandler = new Button.OnClickListener() {
 		public void onClick(View v) {
-			if(txtSearchTerm.getText().length()==0){
+			if (txtSearchTerm.getText().length() == 0) {
 				txtSearchTerm.requestFocus();
 				return;
 			}
-			
-			
-		 
-			searchProcessor = new SearchProcessor(getApplicationContext(),
+
+			double maxDistance = -1;
+			if (txtMaxEditDistance.getText().length() == 0) {
+				txtMaxEditDistance.requestFocus();
+				return;
+			}
+			try {
+				maxDistance = Double.parseDouble(txtMaxEditDistance.getText()
+						.toString());
+			} catch (NumberFormatException exc) {
+				txtMaxEditDistance.requestFocus();
+				return;
+			}
+			if (maxDistance <= 0) {
+				txtMaxEditDistance.requestFocus();
+				return;
+			}
+
+			searchProcessor = new SearchProcessor(getApplicationContext(), gedHandler,
 					txtSearchTerm.getText().toString(), searchOptions,
-					dictionaries.get(selectedDictionary));
+					dictionaries.get(selectedDictionary), maxDistance);
+			disableUI();
 			searchThread = new Thread(null, searchProcessor, "Search thread");
 			searchThread.start();
 			Log.d(TAG, "Started search processor thread");
 
 		}
+	};
+
+	final Handler gedHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			enableUI();
+			Log.d(TAG, "Message! "+msg.obj.toString());
+			setResults((Long) msg.obj);
+		}
+
 	};
 
 	Button.OnClickListener searchOptionsClickHandler = new Button.OnClickListener() {
@@ -170,6 +204,29 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MNU_EXIT, 1, "Exit");
 		return true;
+	}
+
+	protected void setResults(long time) {
+		if(searchProcessor!=null){
+			if(searchProcessor.getResults()!=null){
+				searchResultAdapter = new SearchResultExpandableListAdapter(searchProcessor.getResults(), getApplicationContext());
+				elvResults.setAdapter(searchResultAdapter);
+			}
+			Toast.makeText( getApplicationContext(),
+					 String.format("Time: %1.2f sec", time/1000.0) ,
+					  Toast.LENGTH_LONG).show();
+		}
+		
+	}
+
+	protected void enableUI() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void disableUI() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

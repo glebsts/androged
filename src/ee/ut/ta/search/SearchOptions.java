@@ -2,8 +2,8 @@ package ee.ut.ta.search;
 
 public class SearchOptions {
 	private Boolean exactMatches = true;
-	private Boolean beginningMatch = false;
-	private Boolean middleMatch = true;
+	private Boolean beginningMatch = true;
+	private Boolean middleMatch = false;
 	private Boolean endingMatch = false;
 	private Boolean caseSensitive = false;
 

@@ -1,6 +1,6 @@
 package ee.ut.ta.search;
 
-public class SearchResult {
+public class SearchResult implements Comparable<SearchResult> {
 	
 	private String word;
 	private double distance;
@@ -10,6 +10,16 @@ public class SearchResult {
 		word  = pWord;
 		distance = pDist;
 		type = pType;
+	}
+	
+	public SearchResult(String str){
+		
+		String[] parts = str.split("\\|", 4);
+		this.word = parts[1];
+		this.distance = Double.parseDouble(parts[2]);
+		this.type = Integer.parseInt(parts[3]);
+		
+		
 	}
 	
 	
@@ -32,4 +42,33 @@ public class SearchResult {
 		return type;
 	}
 
+	public int compareTo(SearchResult i2) {
+		int result = 0;
+		if(this.type<i2.type){
+			result = -1;
+			return result;
+		}
+		if(this.type>i2.type){
+			result = 1;
+			return result;
+		}
+		
+		if(this.distance < i2.distance){
+			result = -1;
+			return result;
+		}
+		if(this.distance > i2.distance){
+			result = 1;
+			return result;
+		}
+		
+		result = this.word.compareTo(i2.word);
+		
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%d %1.2f %s", type, distance, word);
+	}
 }

@@ -43,6 +43,7 @@
 #define TRANS_KEY "Transformations"
 #define RESULT_KEY "Results"
 #define LETTERS_KEY "Letters"
+#define DISTANCE_KEY "MaxDistance"
 SRES *resultArray = NULL;
 int num_elements = 0; // To keep track of the number of elements used
 int num_allocated = 0; // This is essentially how large the array is
@@ -327,6 +328,15 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 
 	if (caseInsensitiveMode)
 		string = makeStringToIgnoreCase(string, stringLen);
+	int fS = 0;
+	int bS = 0;
+	int mS = 0;
+	int eS = 0;
+	int flagsShown = 0;
+	char buff[100];
+	sprintf(buff, "Search options: %d|%d|%d|%d", flagsInPositions[0],
+			flagsInPositions[1], flagsInPositions[2], flagsInPositions[3]);
+	LOGD(buff);
 
 	while (i < datalen) {
 		while (j < datalen && file[j] != '\n' && file[j] != '\r')
@@ -356,82 +366,138 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 
 		// find different types of matches, according to flagsInPositions
 		int pos = 0;
-		while ((pos < FP_MAX_POSITIONS) && (flagsInPositions[pos] != L_EMPTY)) {
+		if (flagsShown == 0) {
+			LOGD("Before while");
+			sprintf(buff, "Pos = %d, MaxFP = %d", pos, FP_MAX_POSITIONS);
+			LOGD(buff);
+		};
+		while ((pos < FP_MAX_POSITIONS) /*&& (flagsInPositions[pos] != L_EMPTY)*/) {
+			/*while ((pos < FP_MAX_POSITIONS)) {
+			 if((flagsInPositions[pos] == L_EMPTY) && flagsShown==0){
+			 sprintf(buff, "Flag in position %d is empty: %d", pos, flagsInPositions[pos]);
+			 LOGD(buff);
+			 continue;
+			 }*/
+			if (flagsShown == 0) {
+				sprintf(buff, "Flag[%d]=%d", pos, flagsInPositions[pos]);
+				LOGD(buff);
+			}
 			switch (flagsInPositions[pos++]) {
 			case L_FULL:
+				if (fS == 0) {
+					LOGD("fS");
+					fS++;
+				}
 				fullED = genEditDistance_full(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_PREFIX:
+				if (bS == 0) {
+					LOGD("prefix");
+					bS++;
+				}
 				prefED = genEditDistance_prefix(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_SUFFIX:
+				if (eS == 0) {
+					LOGD("suffix");
+					eS++;
+				}
 				suffED = genEditDistance_suffix(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			case L_INFIX:
+				if (mS == 0) {
+					LOGD("infix");
+					mS++;
+				}
 				infxED = genEditDistance_middle(string,
 						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
 						stringLen, wLen);
 				break;
 			}
 		}
-
+		if (flagsShown == 0) {
+			LOGD("After while");
+		}
+		flagsShown++;
 		if (fullED <= editD || prefED <= editD || suffED <= editD || infxED
 				<= editD) {
 
 			char buff[100];
 
-			SRES temp;
-			temp.result = malloc((strlen(str) + 1) * sizeof(char));
-			strncpy(temp.result, str, strlen(str) + 1);
-
-			puts("------------------------");
+		//	puts("------------------------");
 			if (printLineNumbers) {
-				printf("%ld\n", lineNR);
+			//	printf("%ld\n", lineNR);
 			}
 			puts(str);
 			// print different scores, according to flagsInPositions
 			pos = 0;
-			while ((pos < FP_MAX_POSITIONS) && (flagsInPositions[pos]
-					!= L_EMPTY)) {
+			while ((pos < FP_MAX_POSITIONS)/* && (flagsInPositions[pos]
+			 != L_EMPTY)*/) {
+
+				SRES temp;
+				temp.distance = -1;
 				switch (flagsInPositions[pos++]) {
 				case L_FULL:
-					sprintf(buff, "Score full: %1.2f for %s", fullED, str);
-					LOGD(buff);
+				//	sprintf(buff, "Score full: %1.2f for %s", fullED, str);
+				//	LOGD(buff);
 					//    printf("%f", fullED);
-					temp.distance = fullED;
+					if (fullED <= editD) {
+						temp.result = malloc((strlen(str) + 1) * sizeof(char));
+						strncpy(temp.result, str, strlen(str) + 1);
+						temp.distance = fullED;
+						temp.type = L_FULL;
+					}
 					break;
 				case L_PREFIX:
-					sprintf(buff, "Score pre: %1.2f for %s", prefED, str);
-					LOGD(buff);
-					temp.distance = prefED;
+				//	sprintf(buff, "Score pre: %1.2f for %s", prefED, str);
+				//	LOGD(buff);
+					if (prefED <= editD) {
+						temp.result = malloc((strlen(str) + 1) * sizeof(char));
+						strncpy(temp.result, str, strlen(str) + 1);
+						temp.type = L_PREFIX;
+						temp.distance = prefED;
+					}
 					break;
 				case L_SUFFIX:
-					sprintf(buff, "Score suf: %1.2f for %s", suffED, str);
-					LOGD(buff);
-					temp.distance = suffED;
+				//	sprintf(buff, "Score suf: %1.2f for %s", suffED, str);
+				//	LOGD(buff);
+					if (suffED <= editD) {
+						temp.result = malloc((strlen(str) + 1) * sizeof(char));
+						strncpy(temp.result, str, strlen(str) + 1);
+						temp.type = L_SUFFIX;
+						temp.distance = suffED;
+					}
 					break;
 				case L_INFIX:
-					sprintf(buff, "Score in: %1.2f for %s", infxED, str);
-					LOGD(buff);
-					temp.distance = infxED;
+				//	sprintf(buff, "Score in: %1.2f for %s", infxED, str);
+				//	LOGD(buff);
+					if (infxED <= editD) {
+						temp.result = malloc((strlen(str) + 1) * sizeof(char));
+						strncpy(temp.result, str, strlen(str) + 1);
+						temp.type = L_INFIX;
+						temp.distance = infxED;
+					}
 					break;
 				}
-				temp.type = pos;
 
-			}
-
-			if (AddToArray(temp) == -1)
-				LOGE("Error adding to array");
-			else {
-				sprintf(buff, "\n%d allocated, %d used\n", num_allocated,
-						num_elements);
-				LOGD(buff);
+				if (temp.distance >= 0) {
+					if (AddToArray(temp) == -1)
+						LOGD("Error adding to array");
+					else {
+					//	sprintf(buff, "\n%d allocated, %d used\n",
+					//			num_allocated, num_elements);
+					//	LOGD(buff);
+						//free(temp.result);
+					}
+				} /*else {
+				 LOGD("temp.result==null");
+				 }*/
 			}
 
 		}
@@ -471,7 +537,7 @@ int AddToArray(SRES item) {
 
 		// If the reallocation didn't go so well, inform the user and bail out
 		if (!_tmp) {
-			LOGE("ERROR: Couldn't realloc memory!");
+			LOGD("ERROR: Couldn't realloc memory!");
 			return (-1);
 		}
 
@@ -620,21 +686,22 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag) {
  *  distance calculations.
  */
 int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
-char buff[200];
+	char buff[200];
 	StoreEntry* lEntry = findEntry(pEnv, pStore, SEARCHTERM_KEY, NULL);
 	char *searchString = lEntry->mValue.mString;//"paket";
 
-	 lEntry = findEntry(pEnv, pStore, TRANS_KEY, NULL);
+	lEntry = findEntry(pEnv, pStore, TRANS_KEY, NULL);
 	char *filename = lEntry->mValue.mString;//"/mnt/sdcard/ged/en-et-merli-markko-lt.txt";
 
-	 lEntry = findEntry(pEnv, pStore, WORDS_KEY, NULL);
+	lEntry = findEntry(pEnv, pStore, WORDS_KEY, NULL);
 	char *wordsFile = lEntry->mValue.mString;//"/mnt/sdcard/ged/en_et_03_01_2007_EN_utf8.vp";
 
-	 lEntry = findEntry(pEnv, pStore, LETTERS_KEY, NULL);
-	char *ignoreCaseFile = lEntry->mValue.mString;//"/mnt/sdcard/ged/eesti_suur-vaiketahed";
+	//lEntry = findEntry(pEnv, pStore, LETTERS_KEY, NULL);
+	char *ignoreCaseFile; //= lEntry->mValue.mString;//"/mnt/sdcard/ged/eesti_suur-vaiketahed";
 
-sprintf(buff, "%s|%s|%s|%s", searchString, filename, wordsFile, ignoreCaseFile);
-LOGD(buff);
+	sprintf(buff, "%s|%s|%s|%s", searchString, filename, wordsFile,
+			ignoreCaseFile);
+	LOGD(buff);
 
 	char *data;
 	char *words;
@@ -673,7 +740,43 @@ LOGD(buff);
 	// Maximum edit distance threshold
 	// If the value is >= 0, all matches having distance >= max will be output;
 	double max = -1.0;
-	max = 0.5;
+	//max = 0.5;
+	lEntry = findEntry(pEnv, pStore, DISTANCE_KEY, NULL);
+	if (lEntry == NULL) {
+		max = 0.5;
+	} else {
+		max = lEntry->mValue.mDouble;
+	}
+
+	sprintf(buff, "Max edit distance set to %1.2f", max);
+	LOGD(buff);
+
+	/* set flags*/
+	lEntry = findEntry(pEnv, pStore, SEARCHOPTIONS_KEY, NULL);
+	flagsInPositions[0] = (lEntry->mValue.mBooleanArray[0]) ? L_FULL : L_EMPTY;
+	flagsInPositions[1] = (lEntry->mValue.mBooleanArray[1]) ? L_PREFIX
+			: L_EMPTY;
+	flagsInPositions[2] = (lEntry->mValue.mBooleanArray[2]) ? L_INFIX : L_EMPTY;
+	flagsInPositions[3] = (lEntry->mValue.mBooleanArray[3]) ? L_SUFFIX
+			: L_EMPTY;
+	sprintf(buff, "Search options: %d|%d|%d|%d", flagsInPositions[0],
+			flagsInPositions[1], flagsInPositions[2], flagsInPositions[3]);
+	LOGD(buff);
+
+	if (lEntry->mValue.mBooleanArray[4]) {
+		LOGD("Search is case sensitive");
+
+	} else {
+		LOGD("Search is case insensitive, getting trans file..");
+		lEntry = findEntry(pEnv, pStore, LETTERS_KEY, NULL);
+		if (lEntry != NULL) {
+			caseInsensitiveMode = 1;
+
+			ignoreCaseFile = (char *) readFile(lEntry->mValue.mString);
+			ignoreCaseListFromFile(ignoreCaseFile);
+		}
+	}
+
 	/*
 	 // Parse flags from the command line
 	 int c;
@@ -745,15 +848,17 @@ LOGD(buff);
 	 }
 	 }
 	 */
+
 	/* creating tries */
 	t = createTrie();
 	addT = createARTrie();
 	remT = createARTrie();
 
+	sprintf(buff, "after trie creation, filename= %s", filename);
 	/* read transformations file and build trie-structures */
 	data = (char *) readFile(filename);
 	trieFromFile(data);
-
+	LOGD("after triefromfile");
 	/* the search word */
 	wSearch = (wchar_t*) localeToWchar(searchString);
 	wlen = mbstowcs(NULL, searchString, 0);
@@ -810,10 +915,37 @@ LOGD(buff);
 	if (words != NULL) {
 		munmap(words, strlen(words));
 	}
-
+	LOGD("Before freeTrie");
 	if (t != NULL) {
 		freeTrie(t);
+
 	}
+	if (t != NULL) {
+		t = NULL;
+	}
+	/*	if (t == NULL) {
+	 LOGD("Trie is null");
+	 } else {
+	 LOGD("trie not null");
+	 //t = NULL;
+	 if(t->firstNode !=NULL){
+	 LOGD("trie.fnode not null");
+	 if(t->firstNode->nextNode != NULL){
+	 LOGD("trie.fnode.nnode not null");
+	 if(t->firstNode->nextNode->nextNode!=NULL){
+	 LOGD("trie.fnode.nnode.nnode not null");
+	 }
+	 }
+	 if(t->firstNode->replacement != NULL){
+	 LOGD("trie.fnode.repl not null");
+	 }
+	 if(t->firstNode->rightNode != NULL){
+	 LOGD("trie.fnode.rnode not null");
+	 }
+
+	 }
+	 }
+	 */
 	if (addT != NULL) {
 		freeARTrie(addT);
 	}

@@ -385,6 +385,8 @@ LOGD(buff);
 
 // Builds ignore case list according to given file content
 int ignoreCaseListFromFile(char *data){
+	LOGD("Inside ignoreCaseListFromFile");
+	char buff[100];
 	char *string1;
 	char *string2;
 	wchar_t *wstr1;
@@ -407,7 +409,8 @@ int ignoreCaseListFromFile(char *data){
         string1 = (char *)malloc(j-i+1);
 
         if(string1 == NULL){
-           perror("Memory");
+          // perror("Memory");
+           LOGD("Memory err");
            exit(1);
         }
         string1[j-i] ='\0';
@@ -421,7 +424,8 @@ int ignoreCaseListFromFile(char *data){
         string2 = (char *)malloc(j-i+1);
 
         if(string2 == NULL){
-           perror("Memory");
+          // perror("Memory");
+           LOGD("Memory err");
            exit(1);
         }
         string2[(j-i)]='\0';
@@ -431,7 +435,11 @@ int ignoreCaseListFromFile(char *data){
         wstr2 = (wchar_t *)localeToWchar(string2);
         wstr1 = (wchar_t *)localeToWchar(string1);
 
+ //       sprintf(buff, "%s|%s", string1, string2);
+   //     LOGD(buff);
+
         insertIgnoreCaseElement(wstr1, wstr2);
+
         free(string1);
         free(string2);
         free(wstr1);
@@ -444,6 +452,7 @@ int ignoreCaseListFromFile(char *data){
   }
   /* Release the file content */
   munmap(data, strlen(data));
+  LOGD("Case file released..");
   return 0;
 }
 
