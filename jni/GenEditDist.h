@@ -1,8 +1,9 @@
 /*
  * GenEditDistance.h
  *
- *  Created on: Dec 31, 2012
+ *  Created on: Dec 21, 2012
  *      Author: gleb
+ *  NB! Build using at least r7 version Crystax 
  */
 
 #ifndef GENEDITDIST_H_
@@ -20,6 +21,6 @@ typedef struct {
 wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen);
 int findDistances(char *file, wchar_t *string, int stringLen, double editD, char flagsInPositions[FP_MAX_POSITIONS]);
 int findBest(char *file, wchar_t *string, int stringLen, int best, char flag);
-int doAll(/*int argc, char* argv[] */);
+int getResults(JNIEnv* pEnv, Store* pStore);
 
 #endif /* GENEDITDIST_H_ */

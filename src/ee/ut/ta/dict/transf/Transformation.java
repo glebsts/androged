@@ -1,7 +1,11 @@
 package ee.ut.ta.dict.transf;
 
 import android.util.Log;
-
+/***
+ * single transformation
+ * @author gleb
+ *
+ */
 public class Transformation {
 	static final String TAG = "ged.transformation"; // tag for LogCat
 

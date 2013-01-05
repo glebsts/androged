@@ -1,7 +1,11 @@
 package ee.ut.ta.dict;
 
 import android.util.Log;
-
+/***
+ * class for letters change rules 
+ * @author gleb
+ *
+ */
 public class Letter {
 	static final String TAG = "letter"; // tag for LogCat
 

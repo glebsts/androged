@@ -1,5 +1,9 @@
 package ee.ut.ta.search;
-
+/***
+ * class for hloding search result item 
+ * @author gleb
+ *
+ */
 public class SearchResult implements Comparable<SearchResult> {
 	
 	private String word;

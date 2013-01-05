@@ -22,9 +22,6 @@
 */
 
 #include "Trie.h"
-#include <android/log.h>
-#define TAG "ged.jni.tries"
-#define LOGD(x) __android_log_print(ANDROID_LOG_DEBUG, TAG, x)
 
 // create new TrieNode
 TrieNode *newTrieNode(wchar_t a){
@@ -182,18 +179,13 @@ void freeEndNode(EndNode *endNode){
 void freeTrieNode(TrieNode *node){
    TrieNode *tmp;
    tmp = node;
-   char buff[100];
    while (tmp != NULL){
-	   //sprintf(buff, "Free label %s", wcharToLocale(*tmp->label));
-	   //LOGD("free trie node");
-	   //LOGD(buff);
        if (tmp->replacement != NULL){
            freeEndNode(tmp->replacement);
        }
        if (tmp->rightNode != NULL){
            freeTrieNode(tmp->rightNode);
        }
-
        TrieNode *next;
        next = tmp->nextNode;
        free(tmp);

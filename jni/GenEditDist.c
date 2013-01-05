@@ -45,9 +45,12 @@
 #define LETTERS_KEY "Letters"
 #define DISTANCE_KEY "MaxDistance"
 #define BEST_KEY "Best"
-SRES *resultArray = NULL;
+
+SRES *resultArray = NULL; // array for search results
 int num_elements = 0; // To keep track of the number of elements used
 int num_allocated = 0; // This is essentially how large the array is
+
+
 
 
 /**
@@ -62,6 +65,7 @@ double rem = 1;
  *   Default cost for the 'add' operation in regular edit distance.
  */
 double add = 1;
+
 
 /**
  *    Trie for 'replace' operations in generalized edit distance;
@@ -152,6 +156,7 @@ double *changeSearchStringWithEd_pen = NULL;
  */
 double *changeSearchStringWithGenEd_pen = NULL;
 
+
 /** 
  *   A penalty value that is used in arrays \a changeSearchStringWithEd_pen and 
  *  \a changeSearchStringWithGenEd_pen to block changes. 
@@ -181,8 +186,8 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 	// =============================================================
 	int wlen = 0; // real string length
 	for (i = 0; i < *searchStringLen; i++) {
-		if (searchString[i] != '(' && searchString[i] != ')' && searchString[i]
-				!= '<' && searchString[i] != '>') {
+		if (searchString[i] != '(' && searchString[i] != ')' &&
+        searchString[i]	!= '<' && searchString[i] != '>') {
 			wlen++;
 		}
 	}
@@ -191,8 +196,7 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 		// Create arrays (masks) for penalties
 		changeSearchStringWithEd_pen = malloc((wlen + 2) * sizeof(double));
 		changeSearchStringWithGenEd_pen = malloc((wlen + 2) * sizeof(double));
-		if (changeSearchStringWithEd_pen != NULL
-				&& changeSearchStringWithGenEd_pen != NULL) {
+		if (changeSearchStringWithEd_pen != NULL && changeSearchStringWithGenEd_pen != NULL) {
 			/* Initialize masks with null penalty at each position */
 			for (i = 0; i < wlen + 2; i++) {
 				changeSearchStringWithEd_pen[i] = 0.0;
@@ -207,8 +211,7 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 			for (i = 0; i < *searchStringLen; i++) {
 				if (searchString[i] == '(' || searchString[i] == '<') {
 					// beginning of a region
-					if (i == 1 && (no_eDist_allowed == 1
-							|| no_genEdDist_allowed == 1)) {
+					if (i == 1 && (no_eDist_allowed == 1 || no_genEdDist_allowed == 1)) {
 						// double symbols at the beginning of the string: block changes
 						// (addings) to the beginning
 						changeSearchStringWithEd_pen[0] = CHANGE_PENALT;
@@ -227,15 +230,12 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 				} else if (searchString[i] == ')' || searchString[i] == '>') {
 					// ending of a region
 					if (i == (*searchStringLen - 1)) {
-						if (i - 1 >= 0 && (searchString[i - 1] == ')'
-								|| searchString[i - 1] == '>')) {
+						if (i - 1 >= 0 && (searchString[i - 1] == ')' || searchString[i - 1] == '>')) {
 							// double symbols at the end of the string: block changes
 							// (addings) to the end
-							changeSearchStringWithEd_pen[wlen + 1]
-									= CHANGE_PENALT;
+							changeSearchStringWithEd_pen[wlen + 1] = CHANGE_PENALT;
 							if (searchString[i] == '>') {
-								changeSearchStringWithGenEd_pen[wlen + 1]
-										= CHANGE_PENALT;
+								changeSearchStringWithGenEd_pen[wlen + 1] = CHANGE_PENALT;
 							}
 						}
 					} else {
@@ -250,14 +250,11 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 				} else {
 					// in the middle of a region: make "unchangable"
 					if (no_eDist_allowed == 1) {
-						changeSearchStringWithEd_pen[penVectorPos]
-								= CHANGE_PENALT;
+						changeSearchStringWithEd_pen[penVectorPos] = CHANGE_PENALT;
 					}
 					if (no_genEdDist_allowed == 1) {
-						changeSearchStringWithEd_pen[penVectorPos]
-								= CHANGE_PENALT;
-						changeSearchStringWithGenEd_pen[penVectorPos]
-								= CHANGE_PENALT;
+						changeSearchStringWithEd_pen[penVectorPos] = CHANGE_PENALT;
+						changeSearchStringWithGenEd_pen[penVectorPos] = CHANGE_PENALT;
 					}
 					penVectorPos++;
 				}
@@ -267,16 +264,15 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
 			// =============================================================
 			wchar_t *newSearchString;
 			/* malloc the necessary space */
-			if ((newSearchString = (wchar_t *) malloc(
-					(wlen + 1) * sizeof(wchar_t))) == NULL) {
-				puts("Error: Could not allocate memory");
+			if ((newSearchString = (wchar_t *) malloc((wlen + 1) * sizeof(wchar_t))) == NULL) {
+				LOGD("Error: Could not allocate memory");
 				exit(1);
 			}
 			/* copy values from the old string */
 			int searchStringPos = 0;
 			for (i = 0; i < *searchStringLen; i++) {
-				if (searchString[i] != '(' && searchString[i] != ')'
-						&& searchString[i] != '<' && searchString[i] != '>') {
+				if (searchString[i] != '(' && searchString[i] != ')' &&
+                    searchString[i] != '<' && searchString[i] != '>'){
 					newSearchString[searchStringPos] = searchString[i];
 					searchStringPos++;
 				}
@@ -313,8 +309,7 @@ wchar_t *extractBlockedRegions(wchar_t *searchString, int *searchStringLen) {
  *               be discarded
  *  \param flagsInPositions indicates, which of the 4 different match types should be calculated
  */
-int findDistances(char *file, wchar_t *string, int stringLen, double editD,
-		char flagsInPositions[FP_MAX_POSITIONS]) {
+int findDistances(char *file, wchar_t *string, int stringLen, double editD, char flagsInPositions[FP_MAX_POSITIONS]) {
 	long lineNR = 0;
 	int i = 0;
 	int j = 0;
@@ -329,11 +324,7 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 
 	if (caseInsensitiveMode)
 		string = makeStringToIgnoreCase(string, stringLen);
-	int fS = 0;
-	int bS = 0;
-	int mS = 0;
-	int eS = 0;
-	int flagsShown = 0;
+	
 	char buff[100];
 	sprintf(buff, "Search options: %d|%d|%d|%d", flagsInPositions[0],
 			flagsInPositions[1], flagsInPositions[2], flagsInPositions[3]);
@@ -345,7 +336,7 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 
 		str = (char *) realloc(str, (j - i + 1));
 		if (str == NULL) {
-			perror("Memory");
+			LOGD("Memory");
 			exit(1);
 		}
 		str[j - i] = '\0';
@@ -368,43 +359,35 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 		// find different types of matches, according to flagsInPositions
 		int pos = 0;
 		while ((pos < FP_MAX_POSITIONS) /*&& (flagsInPositions[pos] != L_EMPTY)*/) {
-			/*while ((pos < FP_MAX_POSITIONS)) {
-			 if((flagsInPositions[pos] == L_EMPTY) && flagsShown==0){
-			 sprintf(buff, "Flag in position %d is empty: %d", pos, flagsInPositions[pos]);
-			 LOGD(buff);
-			 continue;
-			 }*/
-
 			switch (flagsInPositions[pos++]) {
 			case L_FULL:
-
-				fullED = genEditDistance_full(string,
-						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
-						stringLen, wLen);
+                     fullED = genEditDistance_full(string, 
+                                                   ((caseInsensitiveMode)?(wstr_new):(wstr)),
+                                                   stringLen, 
+                                                   wLen);
 				break;
 			case L_PREFIX:
-				prefED = genEditDistance_prefix(string,
-						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
-						stringLen, wLen);
+                     prefED = genEditDistance_prefix(string, 
+                                                     ((caseInsensitiveMode)?(wstr_new):(wstr)),
+                                                     stringLen, 
+                                                     wLen);
 				break;
 			case L_SUFFIX:
-				suffED = genEditDistance_suffix(string,
-						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
-						stringLen, wLen);
+                     suffED = genEditDistance_suffix(string, 
+                                                     ((caseInsensitiveMode)?(wstr_new):(wstr)),
+                                                     stringLen, 
+                                                     wLen); 
 				break;
 			case L_INFIX:
-				infxED = genEditDistance_middle(string,
-						((caseInsensitiveMode) ? (wstr_new) : (wstr)),
-						stringLen, wLen);
+                     infxED = genEditDistance_middle(string, 
+                                                     ((caseInsensitiveMode)?(wstr_new):(wstr)),
+                                                     stringLen, 
+                                                     wLen); 
 				break;
 			}
 		}
 
-		if (fullED <= editD || prefED <= editD || suffED <= editD || infxED
-				<= editD) {
-
-			char buff[100];
-
+		if (fullED <= editD || prefED <= editD || suffED <= editD || infxED <= editD) {
 			//	puts("------------------------");
 			if (printLineNumbers) {
 				//	printf("%ld\n", lineNR);
@@ -412,16 +395,13 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 			//		puts(str);
 			// print different scores, according to flagsInPositions
 			pos = 0;
-			while ((pos < FP_MAX_POSITIONS)/* && (flagsInPositions[pos]
-			 != L_EMPTY)*/) {
-
+			while ((pos < FP_MAX_POSITIONS)/* && (flagsInPositions[pos] != L_EMPTY)*/) {
 				SRES temp;
 				temp.distance = -1;
 				switch (flagsInPositions[pos++]) {
 				case L_FULL:
 					//	sprintf(buff, "Score full: %1.2f for %s", fullED, str);
 					//	LOGD(buff);
-					//    printf("%f", fullED);
 					if (fullED <= editD) {
 						temp.result = malloc((strlen(str) + 1) * sizeof(char));
 						strncpy(temp.result, str, strlen(str) + 1);
@@ -470,9 +450,7 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 						//	LOGD(buff);
 						//free(temp.result);
 					}
-				} /*else {
-				 LOGD("temp.result==null");
-				 }*/
+				}
 			}
 
 		}
@@ -489,12 +467,6 @@ int findDistances(char *file, wchar_t *string, int stringLen, double editD,
 		i = j;
 	}
 	free(str);
-	/*	int ci1 = 0;
-	 for(ci1=0; ci1<num_elements;ci1++){
-	 free(resultArray[ci1].result);
-	 }
-	 free(resultArray);
-	 LOGD("Array free!"); */
 	return 0;
 }
 
@@ -525,6 +497,7 @@ int AddToArray(SRES item) {
 
 	return num_elements;
 }
+
 
 /**
  *  Finds generalized edit distances between \a string and each word in \a file, outputs
@@ -635,14 +608,14 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag) {
 		while (index != NULL) {
 			str = (char *) realloc(str, (index->j - index->i + 1));
 			if (str == NULL) {
-				perror("Memory");
+				LOGD("Memory");
 				exit(1);
 			}
 
 			str[index->j - index->i] = '\0';
 			strncpy(str, (file + index->i), (index->j - index->i));
-			sprintf(buff, "Best: 0|%s|%f|%d", str, item->value, flag);
-			LOGD(buff);
+			//sprintf(buff, "Best: 0|%s|%f|%d", str, item->value, flag);
+			//LOGD(buff);
 
 			//puts(str);
 			SRES temp;
@@ -669,24 +642,25 @@ int findBest(char *file, wchar_t *string, int stringLen, int best, char flag) {
 	return 0;
 }
 
+
+
 /**
  *  Main method of the Generalized Edit Distance Tool. Parses input arguments
  *  (format described in output of \c helpInfo()) and performs generalized edit
  *  distance calculations.
  */
-int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
+int getResults(JNIEnv* pEnv, Store* pStore) {
 	char buff[200];
 	StoreEntry* lEntry = findEntry(pEnv, pStore, SEARCHTERM_KEY, NULL);
-	char *searchString = lEntry->mValue.mString;//"paket";
+	char *searchString = lEntry->mValue.mString;
 
 	lEntry = findEntry(pEnv, pStore, TRANS_KEY, NULL);
-	char *filename = lEntry->mValue.mString;//"/mnt/sdcard/ged/en-et-merli-markko-lt.txt";
+	char *filename = lEntry->mValue.mString;
 
 	lEntry = findEntry(pEnv, pStore, WORDS_KEY, NULL);
-	char *wordsFile = lEntry->mValue.mString;//"/mnt/sdcard/ged/en_et_03_01_2007_EN_utf8.vp";
+	char *wordsFile = lEntry->mValue.mString;
 
-	//lEntry = findEntry(pEnv, pStore, LETTERS_KEY, NULL);
-	char *ignoreCaseFile; //= lEntry->mValue.mString;//"/mnt/sdcard/ged/eesti_suur-vaiketahed";
+	char *ignoreCaseFile;
 
 	sprintf(buff, "%s|%s|%s|%s", searchString, filename, wordsFile,
 			ignoreCaseFile);
@@ -774,53 +748,6 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 		}
 	}
 
-	/*
-	 // Parse flags from the command line
-	 int c;
-	 char *argForOpt;
-	 while ((c = getopt (argc, argv, "b:m:elpisf?")) != -1){
-	 switch (c){
-	 case 'f':
-	 if (curInFlags < FP_MAX_POSITIONS) flagsInPositions[curInFlags++] = L_FULL;
-	 break;
-	 case 'p':
-	 if (curInFlags < FP_MAX_POSITIONS) flagsInPositions[curInFlags++] = L_PREFIX;
-	 break;
-	 case 'i':
-	 if (curInFlags < FP_MAX_POSITIONS) flagsInPositions[curInFlags++] = L_INFIX;
-	 break;
-	 case 's':
-	 if (curInFlags < FP_MAX_POSITIONS) flagsInPositions[curInFlags++] = L_SUFFIX;
-	 break;
-	 case 'b':
-	 argForOpt = optarg;
-	 // Number of best results (costs)
-	 best = strtoul(argForOpt, &err, 10);
-	 break;
-	 case 'l':
-	 printLineNumbers = 1;
-	 break;
-	 case 'e':
-	 blockChangesInSearchString = 1;
-	 break;
-	 case 'm':
-	 argForOpt = optarg;
-	 // Maximum edit distance threshold
-	 max = strtod(argForOpt, &err);
-	 break;
-	 case '?':
-	 //  helpInfo(argv[0]);
-	 return 0;
-	 }
-	 }
-	 */
-	// There must be at least 3 arguments left: transformations file, search string and dictionary file
-	/* if (argc - optind < 3){
-	 printf("Wrong number of arguments: %i \n",argc-1);
-	 //	 helpInfo(argv[0]);
-	 return 1;
-	 }
-	 */
 	// EXACTLY ONE of the flags '-b' and '-m' must be set
 	if ((best < 0 && max < 0.0) || (best >= 0 && max >= 0.0)) {
 		sprintf(buff, "Exactly one of the flags '-b' and '-m' must be set;");
@@ -829,34 +756,14 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 		return 1;
 	}
 
-	// Parse remaining arguments
-	/*  int i;
-	 for (i = 0; optind + i < argc; i++){
-	 switch (i){
-	 case 0: filename     = argv[optind + i]; break;
-	 case 1: searchString = argv[optind + i]; break;
-	 case 2: wordsFile    = argv[optind + i]; break;
-	 case 3:{
-	 caseInsensitiveMode = 1;
-	 // ignore case file
-	 ignoreCaseFile = (char *)readFile(argv[optind + i]);
-	 ignoreCaseListFromFile(ignoreCaseFile);
-	 }
-	 break;
-	 }
-	 }
-	 */
-
 	/* creating tries */
 	t = createTrie();
 	addT = createARTrie();
 	remT = createARTrie();
 
-	//sprintf(buff, "after trie creation, filename= %s", filename);
 	/* read transformations file and build trie-structures */
 	data = (char *) readFile(filename);
 	trieFromFile(data);
-	//LOGD("after triefromfile");
 	/* the search word */
 	wSearch = (wchar_t*) localeToWchar(searchString);
 	wlen = mbstowcs(NULL, searchString, 0);
@@ -867,11 +774,8 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 		//printf(" (%ls) (%i) \n", wSearch, wlen);
 	}
 
-	//	LOGD("before read words");
-
 	/* read dictionary file */
 	words = (char *) readFile(wordsFile);
-	LOGD("after read words");
 	if (best >= 0.0) {
 		// ***************
 		//  Output matches on best distances
@@ -885,13 +789,11 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 		);
 	} else {
 
-		LOGD("before maximum");
 		// ***************
 		//  Output matches that are inside given maximum edit distance threshold
 		// ***************
 		findDistances(words, wSearch, wlen, max, flagsInPositions // for every match: output all scores of different types
 		);
-		LOGD("after maximum");
 	}
 
 	/* release used memory */
@@ -921,29 +823,6 @@ int doAll(JNIEnv* pEnv, Store* pStore/*int argc, char* argv[] */) {
 	if (t != NULL) {
 		t = NULL;
 	}
-	/*	if (t == NULL) {
-	 LOGD("Trie is null");
-	 } else {
-	 LOGD("trie not null");
-	 //t = NULL;
-	 if(t->firstNode !=NULL){
-	 LOGD("trie.fnode not null");
-	 if(t->firstNode->nextNode != NULL){
-	 LOGD("trie.fnode.nnode not null");
-	 if(t->firstNode->nextNode->nextNode!=NULL){
-	 LOGD("trie.fnode.nnode.nnode not null");
-	 }
-	 }
-	 if(t->firstNode->replacement != NULL){
-	 LOGD("trie.fnode.repl not null");
-	 }
-	 if(t->firstNode->rightNode != NULL){
-	 LOGD("trie.fnode.rnode not null");
-	 }
-
-	 }
-	 }
-	 */
 	if (addT != NULL) {
 		freeARTrie(addT);
 	}

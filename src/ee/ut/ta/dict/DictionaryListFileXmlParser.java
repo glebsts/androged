@@ -13,7 +13,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 import android.util.Log;
-
+/***
+ * class for parsing dictionary XML collection and creating dictionary items
+ * @author gleb
+ *
+ */
 public class DictionaryListFileXmlParser {
 	static final String TAG = "ged.dictionaryfilexmlparser"; // tag for LogCat
 	

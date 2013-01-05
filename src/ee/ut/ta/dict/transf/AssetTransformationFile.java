@@ -10,7 +10,11 @@ import java.util.List;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
-
+/***
+ * asset-based transformation rules file
+ * @author gleb
+ *
+ */
 public class AssetTransformationFile extends AbstractTransformationFile {
 
 	@Override

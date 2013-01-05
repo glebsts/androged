@@ -10,7 +10,11 @@ import android.os.Message;
 import android.util.Log;
 import ee.ut.ta.dict.IDictionary;
 import ee.ut.ta.search.ged.NativeGed;
-
+/***
+ * search thread starter, result management
+ * @author gleb
+ *
+ */
 public class SearchProcessor implements Runnable {
 	private String searchTerm;
 	private SearchOptions searchOptions;
@@ -38,26 +42,14 @@ public class SearchProcessor implements Runnable {
 	}
 
 	public void run() {
- 
-
 		Log.d(TAG, "Run!");
-		// dict.getWords(ctx);
-		// dict.getLetters(ctx);
-		// dict.getTransformations(ctx);
-		// case-sensitive?
-
-		/*
-		 * jniStoreWords(dict.getWords().toArray(new
-		 * String[dict.getWords().size()]));
-		 */
-
 		runTime = System.currentTimeMillis();
-
+		// init search variables
 		NativeGed nativeGed = new NativeGed();
 		nativeGed.initializeStore();
-		nativeGed.setSearchTerm2(searchTerm);
-		nativeGed.setMaxEditDist2(maxEditDist);
-		nativeGed.setBest2(best);
+		nativeGed.setSearchTermExt(searchTerm);
+		nativeGed.setMaxEditDistExt(maxEditDist);
+		nativeGed.setBestExt(best);
 		nativeGed.setSearchOptions(new boolean[] {
 				searchOptions.getExactMatches(),
 				searchOptions.getBeginningMatch(),
@@ -70,21 +62,15 @@ public class SearchProcessor implements Runnable {
 				+ dict.getTransformationFileName());
 		nativeGed.setLetterFileName("/mnt/sdcard/ged/"
 				+ dict.getLetterFileName());
-
-		// nativeGed.setDictionaryContent(dict.getWords().toArray(new
-		// String[dict.getWords().size()]));
-		// String[] transstrings = new String[dict.getTransformations().size()];
-		// for(int i=0;i<transstrings.length;i++){
-		// transstrings[i]=dict.getTransformations().get(i).toString();
-
-		// }
-		// nativeGed.setTransformationContent(transstrings);
+        // start search
 		String[] searchres = nativeGed.process();
+		// clean store
 		nativeGed.finalizeStore();
 		this.results = new ArrayList<SearchResult>(0);
 		if (searchres != null) {
 			this.results = new ArrayList<SearchResult>(searchres.length);
 			SearchResult item;
+			// parse results to convert from string array to SearchResult array
 			for (String res : searchres) {
 				// Log.d(TAG, res);
 				try {
@@ -95,9 +81,7 @@ public class SearchProcessor implements Runnable {
 				} catch (ArrayIndexOutOfBoundsException exc) {
 					Log.d(TAG, String.format("Line %s is not parseable.", res));
 				}
-
 			}
-
 		} else {
 			Log.d(TAG, "Result is empty");
 		}
@@ -105,16 +89,13 @@ public class SearchProcessor implements Runnable {
 
 		dict.unload();
 
+		// sort results
 		Collections.sort(this.results);
-		/*for (SearchResult sr : this.results) {
-			Log.d(TAG, sr.toString());
-		}*/
+
+		// notify activity about end of search
 		Message msg = Message.obtain();
 		msg.obj = runTime;
 		this.threadHandler.sendMessage(msg);
-		 
-
-
 	}
 
 	private void setResults(List<SearchResult> results) {
@@ -128,11 +109,4 @@ public class SearchProcessor implements Runnable {
 	public long getRunTime() {
 		return runTime;
 	}
-
-	/*
-	 * public static native void jniStoreWords(String[] words);
-	 * 
-	 * static { System.loadLibrary("ged"); // }
-	 */
-
 }

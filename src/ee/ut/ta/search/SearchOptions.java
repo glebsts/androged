@@ -1,5 +1,10 @@
 package ee.ut.ta.search;
 
+/***
+ * class for holding user preferences for the search
+ * @author gleb
+ *
+ */
 public class SearchOptions {
 	private Boolean exactMatches = true;
 	private Boolean beginningMatch = true;

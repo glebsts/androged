@@ -96,8 +96,8 @@ int trieFromFile(char *data){
 
 	i = 0;
 	j = 0;
-//LOGD("Inside creator");
-//char buff[100];
+
+    
 	while(i < datalen){
     /*
     *   Setting weights of default edit operations:
@@ -183,29 +183,17 @@ int trieFromFile(char *data){
           /* Add to add-operations trie */
           w2 = mbstowcs(NULL, string2, 0);
           wstr2 = (wchar_t *)localeToWchar(string2);
-
-
-
-
 if(caseInsensitiveMode)
               wstr2 = makeStringToIgnoreCase(wstr2, w2);
-
-//sprintf(buff, "Add: %s", wstr2);
-  //        LOGD(buff);
           addToARTrie(addT, wstr2, w2, v);
           free(wstr2);
           free(string2);
-
-			}
-			else if(strlen(string2) == 0){
+			} 			else if(strlen(string2) == 0){
           /* Add to remove-operations trie */
           w1 = mbstowcs(NULL, string1, 0);
           wstr1 = (wchar_t *)localeToWchar(string1);
           if(caseInsensitiveMode)
               wstr1 = makeStringToIgnoreCase(wstr1, w1);
-
-          //sprintf(buff, "Remove: %s", wstr2);
-             //       LOGD(buff);
           addToARTrie(remT, wstr1, w1, v);
 			}else{
           /* Add to replace-operations trie */
@@ -217,8 +205,6 @@ if(caseInsensitiveMode)
               wstr1 = makeStringToIgnoreCase(wstr1, w1);
               wstr2 = makeStringToIgnoreCase(wstr2, w2);
           }
-  //        sprintf(buff, "Replace: %s <-> %s", wstr1, wstr2);
-                  //  LOGD(buff);
           addToTrie(wstr1, w1, wstr2,v);
           free(string2);
           free(wstr1);
@@ -226,152 +212,6 @@ if(caseInsensitiveMode)
       if(data[j] == '\r') /* In case we are under Windows */
           j = j + 2;
       else 
-          j = j+1;
-      i = j;
-		}
-	}
-	free(string1);
-	/* Release the memory under data. */
-	munmap(data, strlen(data));
-	return 0;
-}
-
-// Builds add, rep and rem tries from given content of transformations file
-int trieFromData(char *data){
-	char *string1;
-	char *string2;
-	wchar_t *wstr1;
-	wchar_t *wstr2;
-	int w1;
-	int w2;
-	double v;
-	int datalen;
-	int i;
-	int j;
-
-	datalen = strlen(data);
-	string1 = malloc(2);
-	string2 = malloc(2);
-
-	i = 0;
-	j = 0;
-	char buff[100];
-	sprintf(buff, "Datalen: %d", datalen);
-LOGD(buff);
-	while(i < datalen){
-    /*
-    *   Setting weights of default edit operations:
-    *   the line must begin with character '>', followed
-    *   by "add" for addition, "rep" for replacement and
-    *   "del" for deletion operation; after the operation
-    *    marker, ':' is placed and finally comes the new
-    *    weight as double.
-    */
-		if(data[i] == '>'){
-			i = i +1;
-      /* Change weight of default add operation */
-			if(strncmp((char *)(data+i), "add", 3) == 0){
-				i +=4;
-				j = i;
-				while(data[j] != '\n' && data[j] != '\r' && j < strlen(data))
-					j++;
-				add = findValue(data, i, j);
-				if(data[j] == '\r') /* In case we are under Windows */
-					j = j + 2;
-				else j = j+1;
-				i = j;
-			}
-			/* Change weight of default replace operation */
-			else if(strncmp((char *)(data+i), "rep", 3) == 0){
-				i +=4;
-				j = i;
-				while(j < strlen(data) && data[j] != '\n' && data[j] != '\r') j++;
-				rep = findValue(data, i, j);
-				if(data[j] == '\r') /* In case we are under Windows */
-					j = j + 2;
-				else j = j+1;
-				i = j;
-			}
-      /* Change weight of default remove operation */
-			else if(strncmp((char *)(data+i), "rem", 3) == 0){
-				i +=4;
-				j = i;
-				while(j < strlen(data) && data[j] != '\n' && data[j] != '\r') j++;
-				rem = findValue(data, i, j);
-				if(data[j] == '\r') /* In case we are under Windows */
-					j = j + 2;
-				else j = j+1;
-				i = j;
-			}
-		}
-    /*
-    *  Setting weights of generalized edit distance transformations;
-    */
-		else{
-			j = i;
-			/* Locate the left side string of transformation */
-			while(data[j] != ':') j++;
-			string1 = (char *)realloc(string1, (j-i+1));
-
-			if(string1 == NULL){
-				perror("Memory");
-				exit(1);
-			}
-			string1[j-i] ='\0';
-			strncpy(string1, (data +i), (j-i));
-
-
-			/* Locate the right side string of transformation */
-			j++; i = j;
-			while(data[j] != ':') j++;
-			string2 = (char *)realloc(NULL, (j-i+1));
-
-			if(string2 == NULL){
-				perror("Memory");
-				exit(1);
-			}
-			string2[(j-i)]='\0';
-			strncpy(string2, (data +i), (j-i));
-			j++; i = j;
-			while(data[j] != '\n' && data[j] != '\r' && j < datalen) j++;
-
-      /* Find the weight of transformation  */
-			v =  findValue(data, i, j);
-
-       /* According to the type of transformation, add into suitable trie */
-			if(strlen(string1) == 0){
-          /* Add to add-operations trie */
-          w2 = mbstowcs(NULL, string2, 0);
-          wstr2 = (wchar_t *)localeToWchar(string2);
-          if(caseInsensitiveMode)
-              wstr2 = makeStringToIgnoreCase(wstr2, w2);
-          addToARTrie(addT, wstr2, w2, v);
-          free(wstr2);
-          free(string2);
-			}else if(strlen(string2) == 0){
-          /* Add to remove-operations trie */
-          w1 = mbstowcs(NULL, string1, 0);
-          wstr1 = (wchar_t *)localeToWchar(string1);
-          if(caseInsensitiveMode)
-              wstr1 = makeStringToIgnoreCase(wstr1, w1);
-          addToARTrie(remT, wstr1, w1, v);
-			}else{
-          /* Add to replace-operations trie */
-          wstr2 = (wchar_t *)localeToWchar(string2);
-          wstr1 = (wchar_t *)localeToWchar(string1);
-          w1 = mbstowcs(NULL, string1, 0);
-          w2 = mbstowcs(NULL, string2, 0);
-          if(caseInsensitiveMode){
-              wstr1 = makeStringToIgnoreCase(wstr1, w1);
-              wstr2 = makeStringToIgnoreCase(wstr2, w2);
-          }
-          addToTrie(wstr1, w1, wstr2,v);
-          free(string2);
-          free(wstr1);
-			}
-      if(data[j] == '\r') /* In case we are under Windows */
-          j = j + 2;
-      else
           j = j+1;
       i = j;
 		}
@@ -409,7 +249,6 @@ int ignoreCaseListFromFile(char *data){
         string1 = (char *)malloc(j-i+1);
 
         if(string1 == NULL){
-          // perror("Memory");
            LOGD("Memory err");
            exit(1);
         }
@@ -424,7 +263,6 @@ int ignoreCaseListFromFile(char *data){
         string2 = (char *)malloc(j-i+1);
 
         if(string2 == NULL){
-          // perror("Memory");
            LOGD("Memory err");
            exit(1);
         }
@@ -435,11 +273,7 @@ int ignoreCaseListFromFile(char *data){
         wstr2 = (wchar_t *)localeToWchar(string2);
         wstr1 = (wchar_t *)localeToWchar(string1);
 
- //       sprintf(buff, "%s|%s", string1, string2);
-   //     LOGD(buff);
-
         insertIgnoreCaseElement(wstr1, wstr2);
-
         free(string1);
         free(string2);
         free(wstr1);

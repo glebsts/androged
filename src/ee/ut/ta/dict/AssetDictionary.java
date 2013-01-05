@@ -13,7 +13,11 @@ import android.content.res.AssetManager;
 import android.util.Log;
 import ee.ut.ta.dict.transf.ITransformationFile;
 import ee.ut.ta.dict.transf.Transformation;
-
+/***
+ * class for dictionary loaded from assets
+ * @author gleb
+ *
+ */
 public class AssetDictionary extends AbstractDictionary {
 	static final String TAG = "ged.assetdictionary"; // tag for LogCat
 

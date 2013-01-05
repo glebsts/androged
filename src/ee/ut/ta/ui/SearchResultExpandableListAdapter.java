@@ -11,7 +11,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import ee.ut.ta.R;
 import ee.ut.ta.search.SearchResult;
-
+/***
+ * adapter for search result list
+ * @author gleb
+ *
+ */
 public class SearchResultExpandableListAdapter extends BaseExpandableListAdapter {
 
 	private ArrayList<SearchResultGroup> mGroups;

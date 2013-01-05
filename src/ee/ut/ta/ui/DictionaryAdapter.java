@@ -11,7 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import ee.ut.ta.R;
 import ee.ut.ta.dict.IDictionary;
-
+/***
+ * adapter for dictionary list
+ * @author gleb
+ *
+ */
 public class DictionaryAdapter extends ArrayAdapter<IDictionary> {
 
 	static final String TAG = "ged.da"; // tag for LogCat

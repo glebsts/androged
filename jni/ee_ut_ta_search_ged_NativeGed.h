@@ -33,22 +33,6 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchOptions
 
 /*
  * Class:     ee_ut_ta_search_ged_NativeGed
- * Method:    setDictionaryContent
- * Signature: ([Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setDictionaryContent
-  (JNIEnv *, jobject, jobjectArray);
-
-/*
- * Class:     ee_ut_ta_search_ged_NativeGed
- * Method:    setTransformationContent
- * Signature: ([Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setTransformationContent
-  (JNIEnv *, jobject, jobjectArray);
-
-/*
- * Class:     ee_ut_ta_search_ged_NativeGed
  * Method:    process
  * Signature: ()[Ljava/lang/String;
  */

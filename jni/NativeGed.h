@@ -1,8 +1,10 @@
 /*
  * NativeGed.h
  *
- *  Created on: Dec 30, 2012
+ *  Created on: Dec 20, 2012
  *      Author: gleb
+ *  NB! Build using at least r7 version Crystax 
+ * Learned a lot  from S. Ratabouil "Android NDK Beginner's Guide"
  */
 
 #ifndef NATIVEGED_H_
@@ -21,26 +23,17 @@ typedef enum {
 	StoreType_Double, // for max edit distance
 	StoreType_Integer, // for result count
 	StoreType_String, // for search term
-
 	StoreType_BooleanArray, // for flags
-
-
 	StoreType_StringArray,
-// for dict
-//StoreType_Color,  // for custom classes etc
     StoreType_ResultArray
 } StoreType;
 
 typedef union {
 	uint8_t mBoolean;
-
 	double mDouble;
-
 	int32_t mInteger;
 	int64_t mLong;
 	char* mString;
-//  jobject  mColor;
-
 	uint8_t* mBooleanArray;
 	char** mStringArray;
 	jobject*  mResultArray;

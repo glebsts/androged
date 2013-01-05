@@ -1,8 +1,10 @@
 /*
  * ee_ut_ta_search_ged_NativeGed.c
  *
- *  Created on: Dec 30, 2012
+ *  Created on: Dec 20, 2012
  *      Author: gleb
+ * Learned a lot  from S. Ratabouil "Android NDK Beginner's Guide"
+ * NB! Build using at least r7 version Crystax 
  */
 
 #include "ee_ut_ta_search_ged_NativeGed.h"
@@ -33,10 +35,9 @@
 #define LOGE(x) __android_log_print(ANDROID_LOG_ERROR, TAG, x)
 
 static Store mStore = { { }, 0 };
-
-/*Trie *t;
- ARTrie *addT;
- ARTrie *remT; */
+extern SRES *resultArray;
+extern int num_elements;
+extern int num_allocated;
 
 /**
  * Initialization/Finalization.
@@ -61,29 +62,6 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_finalizeStore(
 	}
 	mStore.mLength = 0;
 	LOGD("Finalized store");
-}
-
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchTerm(
-		JNIEnv* pEnv, jobject pThis, jstring pSearchTerm) {
-
-	const char* lStringTmp =
-			(*pEnv)->GetStringUTFChars(pEnv, pSearchTerm, NULL);
-	if (lStringTmp == NULL) {
-		LOGD("NULL on getChars");
-		return;
-	}
-
-	StoreEntry* lEntry = allocateEntry(pEnv, &mStore, SEARCHTERM_KEY);
-	if (lEntry != NULL) {
-		lEntry->mType = StoreType_String;
-
-		jsize lStringLength = (*pEnv)->GetStringUTFLength(pEnv, pSearchTerm);
-		lEntry->mValue.mString = (char*) malloc(
-				sizeof(char) * (lStringLength + 1));
-		strcpy(lEntry->mValue.mString, lStringTmp);
-	}
-	(*pEnv)->ReleaseStringUTFChars(pEnv, pSearchTerm, lStringTmp);
-	LOGD("Set term");
 }
 
 JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchOptions(
@@ -112,132 +90,10 @@ JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setSearchOptions(
 	LOGD("Set search options");
 }
 
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setDictionaryContent(
-		JNIEnv* pEnv, jobject pThis, jobjectArray pWords) {
-
-	jsize lLength = (*pEnv)->GetArrayLength(pEnv, pWords);
-	char** lArray = (char**) malloc(lLength * sizeof(char*));
-	// Fills the C array with a copy of each input Java string.
-	int32_t i, j;
-	for (i = 0; i < lLength; ++i) {
-		//if(i % 2000 == 0){
-
-		//	}
-		// Gets the current Java String from the input Java array.
-		// Object arrays can be accessed element by element only.
-		jstring lString = (*pEnv)->GetObjectArrayElement(pEnv, pWords, i);
-		if ((*pEnv)->ExceptionCheck(pEnv)) {
-			for (j = 0; j < i; ++j) {
-				free(lArray[j]);
-			}
-			free(lArray);
-			return;
-		}
-
-		jsize lStringLength = (*pEnv)->GetStringLength(pEnv, lString);
-		// Malloc return value should theoretically be checked...
-		lArray[i] = (char*) malloc(sizeof(char) * (lStringLength + 1));
-
-		(*pEnv)->GetStringUTFRegion(pEnv, lString, 0, lStringLength, lArray[i]);
-
-		if ((*pEnv)->ExceptionCheck(pEnv)) {
-			char buff[100];
-			sprintf(buff, "Exception check returns true for item %d", i);
-			LOGE(buff);
-			for (j = 0; j < i; ++j) {
-				free(lArray[j]);
-			}
-			free(lArray);
-			return;
-		}
-
-		// No need to keep a reference to the Java string anymore.
-		(*pEnv)->DeleteLocalRef(pEnv, lString);
-	}
-	// Creates a new entry with the new String array.
-	StoreEntry* lEntry = allocateEntry(pEnv, &mStore, WORDS_KEY);
-	if (lEntry != NULL) {
-		lEntry->mType = StoreType_StringArray;
-		lEntry->mLength = lLength;
-		lEntry->mValue.mStringArray = lArray;
-	} else {
-		for (j = 0; j < lLength; ++j) {
-			free(lArray[j]);
-		}
-		free(lArray);
-		return;
-	}
-	LOGD("Set dictionary content");
-
-}
-
-JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setTransformationContent(
-		JNIEnv* pEnv, jobject pThis, jobjectArray pWords) {
-
-	jsize lLength = (*pEnv)->GetArrayLength(pEnv, pWords);
-	char** lArray = (char**) malloc(lLength * sizeof(char*));
-	// Fills the C array with a copy of each input Java string.
-	int32_t i, j;
-	for (i = 0; i < lLength; ++i) {
-		//if(i % 2000 == 0){
-
-		//	}
-		// Gets the current Java String from the input Java array.
-		// Object arrays can be accessed element by element only.
-		jstring lString = (*pEnv)->GetObjectArrayElement(pEnv, pWords, i);
-		if ((*pEnv)->ExceptionCheck(pEnv)) {
-			for (j = 0; j < i; ++j) {
-				free(lArray[j]);
-			}
-			free(lArray);
-			return;
-		}
-
-		jsize lStringLength = (*pEnv)->GetStringLength(pEnv, lString);
-		// Malloc return value should theoretically be checked...
-		lArray[i] = (char*) malloc(sizeof(char) * (lStringLength + 1));
-
-		(*pEnv)->GetStringUTFRegion(pEnv, lString, 0, lStringLength, lArray[i]);
-
-		if ((*pEnv)->ExceptionCheck(pEnv)) {
-			char buff[100];
-			sprintf(buff, "Exception check returns true for item %d", i);
-			LOGE(buff);
-			for (j = 0; j < i; ++j) {
-				free(lArray[j]);
-			}
-			free(lArray);
-			return;
-		}
-
-		// No need to keep a reference to the Java string anymore.
-		(*pEnv)->DeleteLocalRef(pEnv, lString);
-	}
-	// Creates a new entry with the new String array.
-	StoreEntry* lEntry = allocateEntry(pEnv, &mStore, TRANS_KEY);
-	if (lEntry != NULL) {
-		lEntry->mType = StoreType_StringArray;
-		lEntry->mLength = lLength;
-		lEntry->mValue.mStringArray = lArray;
-	} else {
-		for (j = 0; j < lLength; ++j) {
-			free(lArray[j]);
-		}
-		free(lArray);
-		return;
-	}
-	LOGD("Set trans content");
-
-}
-
-extern SRES *resultArray;
-extern int num_elements;
-extern int num_allocated;
-
 JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 		JNIEnv* pEnv, jobject pThis) {
 
-	doAll(pEnv, &mStore);
+	getResults(pEnv, &mStore);
 
 	jobjectArray lJavaArray;
 	char buff[100];
@@ -320,53 +176,6 @@ JNIEXPORT jobjectArray JNICALL Java_ee_ut_ta_search_ged_NativeGed_process(
 
 	}
 
-}
-
-JNIEXPORT jobjectArray JNICALL Java_com_packtpub_Store_getStringArray(
-		JNIEnv* pEnv, jobject pThis) {
-	StoreEntry* lEntry = findEntry(pEnv, &mStore, RESULT_KEY, NULL);
-	if (isEntryValid(pEnv, lEntry, StoreType_StringArray)) {
-		// An array of String in Java is in fact an array of object.
-		jclass lStringClass = (*pEnv)->FindClass(pEnv, "java/lang/String");
-		if (lStringClass == NULL) {
-			return NULL;
-		}
-		jobjectArray lJavaArray = (*pEnv)->NewObjectArray(pEnv,
-				lEntry->mLength, lStringClass, NULL);
-		(*pEnv)->DeleteLocalRef(pEnv, lStringClass);
-		if (lJavaArray == NULL) {
-			return NULL;
-		}
-
-		// Creates a new Java String object for each C string stored.
-		// Reference to the String can be removed right after it is
-		// added to the Java array, as the latter holds a reference
-		// to the String object.
-		int32_t i;
-		for (i = 0; i < lEntry->mLength; ++i) {
-			jstring lString = (*pEnv)->NewStringUTF(pEnv,
-					lEntry->mValue.mStringArray[i]);
-			if (lString == NULL) {
-				return NULL;
-			}
-
-			// Puts the new string in the array. Exception are
-			// checked because of SetObjectArrayElement() (can raise
-			// an ArrayIndexOutOfBounds or ArrayStore Exception).
-			// If one occurs, any object created here will be freed
-			// as they are all referenced locally only.
-			(*pEnv)->SetObjectArrayElement(pEnv, lJavaArray, i, lString);
-			// Note that DeleteLocalRef() can still be called safely
-			// even if an exception is raised.
-			(*pEnv)->DeleteLocalRef(pEnv, lString);
-			if ((*pEnv)->ExceptionCheck(pEnv)) {
-				return NULL;
-			}
-		}
-		return lJavaArray;
-	} else {
-		return NULL;
-	}
 }
 
 JNIEXPORT void JNICALL Java_ee_ut_ta_search_ged_NativeGed_setGedData(

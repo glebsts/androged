@@ -53,6 +53,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 	SearchResultExpandableListAdapter searchResultAdapter;
 	private int selectedDictionary;
 
+	/***
+	 * init activity components
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,13 +77,15 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		btnStartSearch.setOnClickListener(startSearchClickHandler);
 
 		txtSearchTerm = (EditText) findViewById(R.id.txtSearchTerm);
-		txtSearchTerm.setText("paket");
 		txtMaxEditDistance = (EditText) findViewById(R.id.txtMaxEditDistance);
 		txtBest = (EditText) findViewById(R.id.txtBest);
 
 		elvResults = (ExpandableListView) findViewById(R.id.elvResults);
 	}
 
+	/***
+	 * validate data and start search thread
+	 */
 	Button.OnClickListener startSearchClickHandler = new Button.OnClickListener() {
 		public void onClick(View v) {
 			if (txtSearchTerm.getText().length() == 0) {
@@ -105,7 +110,7 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 				}
 				best = -1;
 
-			}else {
+			} else {
 				if (txtBest.getText().length() != 0) {
 					try {
 						best = Integer.parseInt(txtBest
@@ -140,6 +145,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		}
 	};
 
+	/***
+	 * search thread interaction handler
+	 */
 	final Handler gedHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			enableUI();
@@ -149,6 +157,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 	};
 
+	
+	/***
+	 * display search options in dialog
+	 */
 	Button.OnClickListener searchOptionsClickHandler = new Button.OnClickListener() {
 		public void onClick(View v) {
 
@@ -231,6 +243,10 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		return true;
 	}
 
+	/***
+	 * init expandable list adapter from result set, show search time
+	 * @param time time to display in toast
+	 */
 	protected void setResults(long time) {
 		if (searchProcessor != null) {
 			if (searchProcessor.getResults() != null) {
@@ -245,12 +261,18 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 
 	}
 
+	/***
+	 * unblock UI after search
+	 */
 	protected void enableUI() {
 		btnSearchOptions.setEnabled(true);
 		btnStartSearch.setEnabled(true);
 
 	}
 
+	/***
+	 * block UI before search
+	 */
 	protected void disableUI() {
 		btnSearchOptions.setEnabled(false);
 		btnStartSearch.setEnabled(false);
@@ -264,6 +286,9 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	/***
+	 * menu items click handler
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -278,16 +303,13 @@ public class MainActivity extends Activity implements OnItemSelectedListener {
 		return true;
 	}
 
+	/***
+	 * reaction to dictionary selection
+	 */
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id) {
 		Log.d(TAG, "Item at pos " + pos + " selected");
 		this.selectedDictionary = pos;
-		/*
-		 * Toast.makeText( getApplicationContext(),
-		 * ((IDictionary)parent.getItemAtPosition(pos)).getName() ,
-		 * Toast.LENGTH_SHORT).show();
-		 */
-
 	}
 
 	public void onNothingSelected(AdapterView<?> arg0) {

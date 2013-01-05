@@ -3,7 +3,11 @@ package ee.ut.ta.dict.transf;
 import java.util.List;
 
 import android.content.Context;
-
+/***
+ * abstract class for transformation rules file
+ * @author gleb
+ *
+ */
 public abstract class AbstractTransformationFile implements ITransformationFile {
 	protected List<Transformation> transformations = null;
 	static final String TAG = "ged.abstracttransformationfile"; // tag for LogCat

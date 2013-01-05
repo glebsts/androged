@@ -76,7 +76,6 @@ int addToARTrie(ARTrie *art, wchar_t *string, int strLen , double value){
 
 	tmp = art->firstNode;
   while(strLen > 0){
-
        /* We are trying to follow an existing path in the trie ... */
        /* ... reached end of the path and end of our string */
        if(strLen == 1 && tmp->label == *string && value < tmp->value){
@@ -114,7 +113,6 @@ int addToARTrie(ARTrie *art, wchar_t *string, int strLen , double value){
      else break;
   }
   /* ... existing path not found, so it must be created */
-
   tmp->rightNode = newARTNode(*string);
   tmp = tmp->rightNode;
   if(strLen == 1)
@@ -131,8 +129,6 @@ int addToARTrie(ARTrie *art, wchar_t *string, int strLen , double value){
       tmp->nextNode = (ARTNode *)newARTNode(*string);
       tmp->nextNode->value = value;
   }
-
-
   return 0;
 }
 

@@ -101,7 +101,7 @@ IgnoreCaseListElement *createIgnoreCaseElement(wchar_t *l, wchar_t *r) {
 		abort();
 	e->left = (wchar_t *) copy_wchar_t(l, wchar_len(l));
 	e->right = (wchar_t *) copy_wchar_t(r, wchar_len(r));
-	e->next = NULL;
+	e->next = NULL; // GS
 
 	return e;
 }
@@ -147,9 +147,9 @@ int insertValues(ListItem * li, int i, int j) {
 	return 0;
 }
 
+
 // insert new item into the list
-int insertListItem(List *list, double value, int i, int j, int isFull,
-		int inserted) {
+int insertListItem(List *list, double value, int i, int j, int isFull, int inserted) {
 	ListItem *item;
 	ListItem *nextItem;
 	ListItem *newFirst;
@@ -240,8 +240,6 @@ int insertIgnoreCaseElement(wchar_t *l, wchar_t *r) {
 
 	// add as first element
 	if (ignoreCase == NULL) {
-		//   if(debug)
-		//     puts("Inserting first element to ignore case list");
 		//LOGD("Inserting first element to ignore case list");
 		ignoreCase = createIgnoreCaseElement(l, r);
 
@@ -259,12 +257,8 @@ int insertIgnoreCaseElement(wchar_t *l, wchar_t *r) {
 
 		}
 
-
-		//        if(debug)
-		//   puts("Inserted element to ignore case list");
 	//	LOGD("Inserted element to ignore case list");
 		current->next = createIgnoreCaseElement(l, r);
-
 		return 0;
 	}
 }

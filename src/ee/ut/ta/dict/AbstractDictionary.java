@@ -8,6 +8,11 @@ import android.util.Log;
 import ee.ut.ta.dict.transf.ITransformationFile;
 import ee.ut.ta.dict.transf.Transformation;
 
+/***
+ * abstract class for dictionary
+ * @author gleb
+ *
+ */
 abstract class AbstractDictionary implements IDictionary {
 	protected List<String> words = null;
 	protected List<Transformation> transformations = null;

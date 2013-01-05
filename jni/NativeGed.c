@@ -1,8 +1,10 @@
 /*
  * NativeGed.c
  *
- *  Created on: Dec 30, 2012
+ *  Created on: Dec 20, 2012
  *      Author: gleb
+ *  NB! Build using at least r7 version Crystax 
+ * Learned a lot  from S. Ratabouil "Android NDK Beginner's Guide"
  */
 
 #include "NativeGed.h"
@@ -82,10 +84,6 @@ void releaseEntryValue(JNIEnv* pEnv, StoreEntry* pEntry) {
         case StoreType_String:
             free(pEntry->mValue.mString);
             break;
-  /*      case StoreType_Color:
-            // Unreferences the Id object for garbage collection.
-            (*pEnv)->DeleteGlobalRef(pEnv, pEntry->mValue.mColor);
-            break; */
         case StoreType_BooleanArray:
             free(pEntry->mValue.mBooleanArray);
             break;

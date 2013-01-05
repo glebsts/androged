@@ -7,7 +7,11 @@ import android.util.Log;
 import ee.ut.ta.R;
 import ee.ut.ta.dict.transf.AssetTransformationStorage;
 
-
+/***
+ * class for holding collection of asset-based dictionaries
+ * @author gleb
+ *
+ */
 public class AssetDictionaryStorage extends AbstractDictionaryStorage{
 	static final String TAG = "ged.assetdictionarystorage"; // tag for LogCat
 	private Context context;

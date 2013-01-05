@@ -329,7 +329,6 @@ double genEditDistance_pens(wchar_t *a, wchar_t *b, int aLen, int bLen, double* 
           }
       }
   }
-
   return score;
 }
 

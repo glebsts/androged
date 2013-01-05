@@ -13,7 +13,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 import android.util.Log;
-
+/***
+ * parser of transformation rule files XML collection
+ * @author gleb
+ *
+ */
 public class TransformationListFileXmlParser {
 	static final String TAG = "ged.transformationfilexmlparser"; // tag for LogCat
 	

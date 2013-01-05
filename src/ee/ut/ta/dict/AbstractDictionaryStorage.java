@@ -3,7 +3,11 @@ package ee.ut.ta.dict;
 import java.util.List;
 
 import ee.ut.ta.dict.transf.ITransformationStorage;
-
+/***
+ * abstract class for dictionary collection handling
+ * @author gleb
+ *
+ */
 abstract class AbstractDictionaryStorage implements IDictionaryStorage {
 	private List<IDictionary> dictionaries = null;
 	static final String TAG = "ged.abstractdictionarystorage"; // tag for LogCat

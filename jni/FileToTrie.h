@@ -75,8 +75,6 @@ double findValue(char *data, int i, int j);
 */
 int trieFromFile(char *data);
 
-int trieFromData(char *data);
-
 /**
 *   Reads 'ignore case' transformations from file content \a *data and 
 *  builds tries \a ignoreCase list.
